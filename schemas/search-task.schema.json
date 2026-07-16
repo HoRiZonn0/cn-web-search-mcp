@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "search-task.schema.json",
+  "title": "SearchTask",
+  "type": "object",
+  "required": ["task_id", "question", "task_type", "requirements"],
+  "properties": {
+    "task_id": {"type": "string", "minLength": 1},
+    "question": {"type": "string", "minLength": 1},
+    "task_type": {"enum": ["realtime", "recent", "versioned", "stable"]},
+    "language": {"type": "string"},
+    "entities": {"type": "array", "items": {"type": "string"}},
+    "requirements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "description", "priority"],
+        "properties": {
+          "id": {"type": "string"},
+          "description": {"type": "string"},
+          "priority": {"enum": ["required", "optional"]}
+        }
+      }
+    },
+    "time_requirement": {"type": "object"},
+    "max_rounds": {"type": "integer", "minimum": 1, "maximum": 5}
+  }
+}

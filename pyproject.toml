@@ -1,0 +1,34 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "cn-web-search-mcp"
+version = "0.1.0"
+description = "Autonomous Chinese web research MCP server"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = ["mcp>=1.27,<2"]
+
+[project.urls]
+Repository = "https://github.com/HoRiZonn0/cn-web-search-mcp"
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "pytest-asyncio>=0.23"]
+
+[project.scripts]
+cn-web-search-mcp = "cn_web_search_mcp.__main__:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/cn_web_search_mcp"]
+
+[tool.hatch.build]
+include = [
+  "src/cn_web_search_mcp/**/*.py",
+  "src/cn_web_search_mcp/data/*.md",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+asyncio_mode = "auto"

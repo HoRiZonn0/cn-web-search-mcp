@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "round-input.schema.json",
+  "title": "SearchRoundInput",
+  "type": "object",
+  "required": ["task", "round_number", "stages", "results"],
+  "properties": {
+    "task": {"type": "object"},
+    "round_number": {"type": "integer", "minimum": 1},
+    "stages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["engine", "status", "query_id", "result_count"],
+        "properties": {
+          "engine": {"enum": ["360", "sogou", "bing_rss", "web_search"]},
+          "status": {"enum": ["success", "empty", "blocked", "timeout", "error", "skipped"]},
+          "query_id": {"type": "string"},
+          "result_count": {"type": "integer", "minimum": 0},
+          "elapsed_ms": {"type": "integer", "minimum": 0},
+          "error": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "results": {"type": "array", "items": {"type": "object"}},
+    "conflicts": {"type": "array", "items": {"type": "object"}}
+  }
+}

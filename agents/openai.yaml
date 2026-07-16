@@ -1,0 +1,14 @@
+interface:
+  display_name: "CN Web Search MCP"
+  short_description: "通过MCP自主完成中文联网搜索、正文抓取与证据质量评价"
+  default_prompt: "Use $cn-web-search-mcp to research this question and answer only from its final evidence."
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "cn-web-search"
+      description: "自主执行中文网络搜索、抓取、质量评分和补搜"
+      transport: "stdio"
+
+policy:
+  allow_implicit_invocation: true

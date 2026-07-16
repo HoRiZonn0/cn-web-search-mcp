@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "research-result.schema.json",
+  "title": "ResearchResult",
+  "type": "object",
+  "required": ["status", "question", "quality", "answer_context", "evidence", "unresolved", "conflicts", "trace_summary"],
+  "properties": {
+    "status": {"enum": ["completed", "unresolvable"]},
+    "question": {"type": "string"},
+    "quality": {"type": "object"},
+    "answer_context": {
+      "type": "object",
+      "required": ["facts", "conflicts", "unresolved", "instruction"],
+      "properties": {
+        "facts": {"type": "array", "items": {"type": "object"}},
+        "conflicts": {"type": "array", "items": {"type": "object"}},
+        "unresolved": {"type": "array", "items": {"type": "string"}},
+        "instruction": {"type": "string"}
+      }
+    },
+    "evidence": {"type": "array", "items": {"type": "object"}},
+    "unresolved": {"type": "array", "items": {"type": "string"}},
+    "conflicts": {"type": "array", "items": {"type": "object"}},
+    "trace_summary": {"type": "object"}
+  }
+}

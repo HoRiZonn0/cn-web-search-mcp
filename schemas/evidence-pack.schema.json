@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "evidence-pack.schema.json",
+  "title": "EvidencePack",
+  "type": "object",
+  "required": ["task", "status", "quality", "decision", "evidence", "trace"],
+  "properties": {
+    "task": {"type": "object"},
+    "status": {"enum": ["sufficient", "needs_search", "unresolvable"]},
+    "quality": {
+      "type": "object",
+      "required": ["source_set_completed"],
+      "properties": {
+        "source_set_completed": {"type": "boolean"}
+      }
+    },
+    "decision": {"type": "object"},
+    "evidence": {"type": "array", "items": {"type": "object"}},
+    "unresolved": {"type": "array", "items": {"type": "string"}},
+    "conflicts": {"type": "array", "items": {"type": "object"}},
+    "trace": {
+      "type": "object",
+      "required": ["source_set_completed"],
+      "properties": {
+        "source_set_completed": {"type": "boolean"}
+      }
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "job-status.schema.json",
+  "title": "ResearchJobStatus",
+  "type": "object",
+  "required": ["job_id", "status", "phase"],
+  "properties": {
+    "job_id": {"type": "string", "pattern": "^rs_[0-9a-f]{32}$"},
+    "status": {"enum": ["queued", "running", "completed", "unresolvable", "failed", "cancelled"]},
+    "phase": {"type": "string"},
+    "round": {"type": "integer", "minimum": 0},
+    "sources_completed": {"type": "integer", "minimum": 0},
+    "sources_total": {"type": "integer", "minimum": 0},
+    "error": {"type": ["string", "null"]},
+    "updated_at": {"type": "string", "format": "date-time"}
+  }
+}
