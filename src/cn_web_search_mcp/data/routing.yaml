@@ -17,7 +17,7 @@ intents:
   - id: academic
     keywords: [论文, 研究, 学术, 期刊, 预印本, 文献]
     categories: [学术/教育]
-    preferred_source_ids: [cnki, arxiv, nih]
+    preferred_source_ids: [crossref, arxiv, nih, cnki]
     verification_source_ids: []
     max_sources: 3
 

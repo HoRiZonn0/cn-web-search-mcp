@@ -80,6 +80,41 @@ def build_catalog(markdown_path: Path) -> dict:
         }
         for source_id, name, domain, endpoint_id, adapter in BUILTIN_DISCOVERY_SOURCES
     ]
+    sources.append(
+        {
+            "id": "crossref",
+            "name": "Crossref",
+            "legacy_entity": "Crossref",
+            "legacy_category": "系统内置结构化来源",
+            "categories": ["学术/教育"],
+            "keywords": ["crossref", "doi", "论文", "期刊", "文献"],
+            "domains": ["api.crossref.org", "doi.org"],
+            "source_role": "curated_reference",
+            "authority": 4,
+            "reliability": "high",
+            "languages": ["zh-CN", "en"],
+            "capabilities": ["academic_search", "structured_metadata"],
+            "enabled": True,
+            "fallback_source_ids": ["arxiv", "nih"],
+            "rate_policy": {
+                "serial_only": False,
+                "minimum_interval_seconds": 0,
+                "max_concurrency": 2,
+                "timeout_seconds": 12,
+            },
+            "endpoints": [
+                {
+                    "id": "crossref-works-api",
+                    "method": "structured_api",
+                    "url": "https://api.crossref.org/works",
+                    "discovery_only": False,
+                    "evidence_eligible": True,
+                    "adapter": "crossref_api",
+                }
+            ],
+            "provenance": "built-in structured academic source",
+        }
+    )
     for index, entry in enumerate(entries, 1):
         base = _base_id(entry.urls[0]) if entry.urls else f"source-{index:03d}"
         counts[base] += 1
@@ -101,8 +136,7 @@ def build_catalog(markdown_path: Path) -> dict:
             }
             for url_index, url in enumerate(entry.urls, 1)
         ]
-        sources.append(
-            {
+        source_payload = {
                 "id": source_id,
                 "name": entry.entity,
                 "legacy_entity": entry.entity,
@@ -126,7 +160,31 @@ def build_catalog(markdown_path: Path) -> dict:
                 "endpoints": endpoints,
                 "provenance": "migrated from authoritative-sites.md",
             }
-        )
+        if source_id == "arxiv":
+            source_payload["capabilities"].extend(["academic_search", "structured_metadata"])
+            source_payload["endpoints"].append(
+                {
+                    "id": "arxiv-query-api",
+                    "method": "structured_api",
+                    "url": "https://export.arxiv.org/api/query",
+                    "discovery_only": False,
+                    "evidence_eligible": True,
+                    "adapter": "arxiv_api",
+                }
+            )
+        if source_id == "nih":
+            source_payload["capabilities"].extend(["academic_search", "structured_metadata"])
+            source_payload["endpoints"].append(
+                {
+                    "id": "pubmed-eutils-api",
+                    "method": "structured_api",
+                    "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi",
+                    "discovery_only": False,
+                    "evidence_eligible": True,
+                    "adapter": "pubmed_api",
+                }
+            )
+        sources.append(source_payload)
     raw = markdown_path.read_bytes()
     return {
         "version": 2,

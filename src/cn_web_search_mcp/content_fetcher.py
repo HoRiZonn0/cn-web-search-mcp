@@ -265,7 +265,11 @@ class ContentFetcher:
         authority_hosts: set[str] | None = None,
     ) -> list[SearchResult]:
         authority_hosts = authority_hosts or set()
-        selected = results[: self.settings.max_fetches_per_round]
+        selected = [
+            result
+            for result in results
+            if not (result.content_status == "fetched" and result.content)
+        ][: self.settings.max_fetches_per_round]
         limits = ExecutionLimits(
             max_query_concurrency=3,
             max_stage_concurrency=8,

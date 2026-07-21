@@ -27,7 +27,11 @@ class SourceRegistryTests(unittest.TestCase):
                     source.legacy_entity,
                     source.legacy_category,
                     source.keywords,
-                    [endpoint.url for endpoint in source.endpoints],
+                    [
+                        endpoint.url
+                        for endpoint in source.endpoints
+                        if endpoint.method == "homepage"
+                    ],
                 )
                 for source in migrated_sources
             ],
@@ -35,7 +39,7 @@ class SourceRegistryTests(unittest.TestCase):
         report = registry.full_scan_report()
         self.assertTrue(report["validation_completed"])
         self.assertEqual(report["declared_sources"], report["loaded_sources"])
-        self.assertEqual(report["loaded_sources"], len(legacy) + 4)
+        self.assertEqual(report["loaded_sources"], len(legacy) + 5)
 
     def test_duplicate_yaml_mapping_key_is_rejected(self):
         content = """\

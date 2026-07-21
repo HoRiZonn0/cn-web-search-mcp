@@ -34,7 +34,11 @@ def plan(question: str, requirements: list[str] | None = None) -> dict[str, Any]
             category=source.legacy_category,
             entity=source.legacy_entity,
             keywords=list(source.keywords),
-            urls=[endpoint.url for endpoint in source.endpoints if endpoint.url],
+            urls=[
+                endpoint.url
+                for endpoint in source.endpoints
+                if endpoint.url and endpoint.method == "homepage"
+            ],
         )
         for source in registry.authority_sources()
     ]

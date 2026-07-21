@@ -112,7 +112,11 @@ class SourceRegistry:
     def authority_sources(self) -> list[SourceDefinition]:
         """Return migrated authority entries, excluding discovery channels."""
 
-        return [source for source in self.all() if source.source_role != "search_channel"]
+        return [
+            source
+            for source in self.all()
+            if source.provenance == "migrated from authoritative-sites.md"
+        ]
 
     def full_scan_report(self) -> dict[str, Any]:
         loaded = len(self.catalog.sources)

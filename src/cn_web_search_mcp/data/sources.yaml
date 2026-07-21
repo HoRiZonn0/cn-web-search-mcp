@@ -1,5 +1,5 @@
 version: 2
-declared_sources: 107
+declared_sources: 108
 provenance:
   source_file: authoritative-sites.md
   source_sha256: 54a3291f177ad93cfbf33b694f5e53c46553e35a94914657932625e56a6a3850
@@ -129,6 +129,47 @@ sources:
     evidence_eligible: false
     adapter: web_search
   provenance: built-in mandatory discovery channel
+- id: crossref
+  name: Crossref
+  legacy_entity: Crossref
+  legacy_category: 系统内置结构化来源
+  categories:
+  - 学术/教育
+  keywords:
+  - crossref
+  - doi
+  - 论文
+  - 期刊
+  - 文献
+  domains:
+  - api.crossref.org
+  - doi.org
+  source_role: curated_reference
+  authority: 4
+  reliability: high
+  languages:
+  - zh-CN
+  - en
+  capabilities:
+  - academic_search
+  - structured_metadata
+  enabled: true
+  fallback_source_ids:
+  - arxiv
+  - nih
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 2
+    timeout_seconds: 12
+  endpoints:
+  - id: crossref-works-api
+    method: structured_api
+    url: https://api.crossref.org/works
+    discovery_only: false
+    evidence_eligible: true
+    adapter: crossref_api
+  provenance: built-in structured academic source
 - id: dev
   name: React
   legacy_entity: React
@@ -1390,6 +1431,8 @@ sources:
   - zh-CN
   capabilities:
   - authority_discovery
+  - academic_search
+  - structured_metadata
   enabled: true
   fallback_source_ids: []
   rate_policy:
@@ -1403,6 +1446,12 @@ sources:
     url: https://arxiv.org
     discovery_only: true
     evidence_eligible: false
+  - id: arxiv-query-api
+    method: structured_api
+    url: https://export.arxiv.org/api/query
+    discovery_only: false
+    evidence_eligible: true
+    adapter: arxiv_api
   provenance: migrated from authoritative-sites.md
 - id: nih
   name: PubMed
@@ -1424,6 +1473,8 @@ sources:
   - zh-CN
   capabilities:
   - authority_discovery
+  - academic_search
+  - structured_metadata
   enabled: true
   fallback_source_ids: []
   rate_policy:
@@ -1437,6 +1488,12 @@ sources:
     url: https://pubmed.ncbi.nlm.nih.gov
     discovery_only: true
     evidence_eligible: false
+  - id: pubmed-eutils-api
+    method: structured_api
+    url: https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi
+    discovery_only: false
+    evidence_eligible: true
+    adapter: pubmed_api
   provenance: migrated from authoritative-sites.md
 - id: chsi
   name: 考研

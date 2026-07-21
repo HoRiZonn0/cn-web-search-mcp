@@ -21,6 +21,7 @@ from .core.service import evaluate, plan
 from .network import HttpClient
 from .search_adapters import build_search_adapters
 from .store import JobStore
+from .structured_adapters import build_structured_adapters, run_structured_sources
 
 
 class ResearchCancelled(RuntimeError):
@@ -233,7 +234,16 @@ class ResearchRunner:
         fetcher = self._fetcher or ContentFetcher(runtime_settings, client, self.store)
 
         queries = [_query_from_dict(item) for item in research_plan["queries"]]
+        selected_vertical_sources = {
+            item["source_id"] for item in research_plan["source_routing"]["routes"]
+        }
+        structured_adapters = build_structured_adapters(
+            selected_vertical_sources,
+            runtime_settings,
+            client,
+        )
         all_stages = []
+        structured_stages = []
         all_results: list[SearchResult] = []
         final_pack = None
 
@@ -243,10 +253,16 @@ class ResearchRunner:
             progress("searching", round_number, 0, total_stages)
             execution = await orchestrator.run_round_async(queries, round_number)
             all_stages.extend(execution.stages)
+            structured_execution = await run_structured_sources(
+                structured_adapters,
+                queries,
+                timeout_seconds=runtime_settings.request_timeout_seconds + 1,
+            )
+            structured_stages.extend(structured_execution.stages)
             progress("searching", round_number, total_stages, total_stages)
             check_cancelled()
 
-            candidates = list(execution.results)
+            candidates = [*execution.results, *structured_execution.results]
             if round_number == 1 and queries:
                 candidates = _authority_seeds(research_plan, queries[0]) + candidates
             candidates = _prioritize_candidates(candidates, runtime_settings.max_fetches_per_round)
@@ -314,6 +330,9 @@ class ResearchRunner:
                 "raw_results": len(all_results),
                 "authority_entries_scanned": research_plan["authority_scan"]["scanned_entries"],
                 "authority_scan_completed": research_plan["authority_scan"]["completed"],
+                "catalog_sources_loaded": research_plan["source_catalog"]["loaded_sources"],
+                "structured_source_attempts": len(structured_stages),
+                "structured_sources": sorted({item.engine for item in structured_stages}),
                 "elapsed_ms": round((perf_counter() - started) * 1000),
             },
         }
