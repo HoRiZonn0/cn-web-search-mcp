@@ -4,8 +4,13 @@
 MCP tools
   → JobService
     → ResearchRunner
+      → YAML SourceRegistry（全量加载与校验）
+      → SourceRouter（意图定向提示）
       → Search Core
       → 360 / Sogou / Bing RSS / Web Search adapters
+      → optional structured adapters
+        → Crossref
+        → arXiv
       → ContentFetcher
         → HTTP first
         → optional Firecrawl fallback
@@ -23,6 +28,22 @@ MCP tools
 5. 是否补搜由覆盖、时效、权威性、冲突和可回答性共同决定。
 6. 原始正文不进入默认 MCP 工具结果，只返回最小证据片段和 URL。
 7. 抓取失败不会终止整批任务；配置 Firecrawl 后，受阻域名会自动升级抓取后端。
+8. YAML 中的来源声明不等于运行能力；只有注册 Adapter 的端点才是 executable。
+9. 结构化定向来源只能补充四源结果，不能替代四源完整执行。
+
+## 来源目录
+
+运行时以 `src/cn_web_search_mcp/data/sources.yaml` 为准。服务启动时完整解析 YAML，并执行：
+
+- 重复 YAML 键检测；
+- Pydantic 字段校验；
+- declared/loaded 数量一致性检查；
+- 来源 ID 与端点 ID 唯一性检查；
+- fallback 引用完整性检查。
+
+`routing.yaml` 只负责生成主源、备源和核验源提示。来源健康度、响应时间和熔断状态仍保存在 SQLite，不写回静态 YAML。
+
+当前处于迁移期：旧 Markdown 保留用于无损等价测试，但线上规划已经不再直接解析 Markdown。
 
 ## 搜索来源与证据来源
 
