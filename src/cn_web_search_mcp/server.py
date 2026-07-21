@@ -12,6 +12,7 @@ from mcp.server.auth.provider import AccessToken
 from mcp.server.auth.settings import AuthSettings
 
 from .config import Settings
+from .core.sources import RuntimeCoverageRegistry, SourceRegistry, SourceRouter
 from .jobs import JobService
 
 
@@ -28,6 +29,9 @@ class _StaticTokenVerifier:
 def create_server(settings: Settings | None = None, service: JobService | None = None) -> tuple[FastMCP, JobService]:
     settings = settings or Settings.from_env()
     service = service or JobService(settings)
+    source_registry = SourceRegistry.load_default()
+    source_router = SourceRouter.load_default(source_registry)
+    source_coverage = RuntimeCoverageRegistry()
     base_url = f"http://{settings.host}:{settings.port}"
     auth = None
     verifier = None
@@ -125,6 +129,45 @@ def create_server(settings: Settings | None = None, service: JobService | None =
                 "max_results_per_source": settings.max_results_per_source,
                 "max_fetches_per_round": settings.max_fetches_per_round,
                 "max_job_workers": settings.max_job_workers,
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+
+    @mcp.resource("cnws://sources/catalog")
+    def source_catalog_resource() -> str:
+        """Read catalog completeness without exposing the full knowledge base."""
+
+        return json.dumps(source_registry.full_scan_report(), ensure_ascii=False, indent=2)
+
+    @mcp.resource("cnws://sources/coverage")
+    def source_coverage_resource() -> str:
+        """Distinguish declared endpoints from executable runtime adapters."""
+
+        return json.dumps(source_coverage.report(source_registry), ensure_ascii=False, indent=2)
+
+    @mcp.resource("cnws://sources/route/{query}")
+    def source_route_resource(query: str) -> str:
+        """Preview intent-specific source hints; mandatory four-source discovery is separate."""
+
+        plan = source_router.plan(query)
+        return json.dumps(
+            {
+                "question": plan.question,
+                "intents": plan.intents,
+                "routes": [
+                    {
+                        "source_id": item.source_id,
+                        "role": item.role,
+                        "intents": item.intents,
+                        "score": item.score,
+                        "reasons": item.reasons,
+                    }
+                    for item in plan.routes
+                ],
+                "evaluated_sources": plan.evaluated_sources,
+                "catalog_scan_completed": plan.catalog_scan_completed,
+                "discovery_policy": plan.discovery_policy,
             },
             ensure_ascii=False,
             indent=2,
