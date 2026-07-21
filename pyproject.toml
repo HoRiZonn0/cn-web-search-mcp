@@ -8,7 +8,11 @@ version = "0.1.0"
 description = "Autonomous Chinese web research MCP server"
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = ["mcp>=1.27,<2"]
+dependencies = [
+  "mcp>=1.27,<2",
+  "pydantic>=2.8,<3",
+  "PyYAML>=6,<7",
+]
 
 [project.urls]
 Repository = "https://github.com/HoRiZonn0/cn-web-search-mcp"
@@ -26,6 +30,7 @@ packages = ["src/cn_web_search_mcp"]
 include = [
   "src/cn_web_search_mcp/**/*.py",
   "src/cn_web_search_mcp/data/*.md",
+  "src/cn_web_search_mcp/data/*.yaml",
 ]
 
 [tool.pytest.ini_options]
