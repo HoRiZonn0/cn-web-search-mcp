@@ -2,26 +2,44 @@
 
 from __future__ import annotations
 
-from pathlib import Path
+from functools import lru_cache
 from typing import Any
 
 from .analyzers import analyze_task
 from .engines import REQUIRED_SOURCES
-from .knowledge import load_authority_entries, scan_authorities
+from .knowledge import scan_authorities
 from .models import Evidence, EvidencePack, Query, SearchResult, SearchTask, StageRecord, StageStatus, TaskType, to_dict
 from .planners import plan_queries, plan_retry_queries
 from .processing import deduplicate_results, filter_after_cutoff, process_content
 from .quality import decide_next_action, normalize_declared_conflicts, score_result, score_round
+from .knowledge.loader import AuthorityEntry
+from .sources import SourceRegistry, SourceRouter
+
+@lru_cache(maxsize=1)
+def _source_registry() -> SourceRegistry:
+    return SourceRegistry.load_default()
 
 
-ROOT = Path(__file__).resolve().parents[1]
-AUTHORITY_PATH = ROOT / "data" / "authoritative-sites.md"
+@lru_cache(maxsize=1)
+def _source_router() -> SourceRouter:
+    registry = _source_registry()
+    return SourceRouter.load_default(registry)
 
 
 def plan(question: str, requirements: list[str] | None = None) -> dict[str, Any]:
     task = analyze_task(question, requirements)
-    entries = load_authority_entries(AUTHORITY_PATH)
+    registry = _source_registry()
+    entries = [
+        AuthorityEntry(
+            category=source.legacy_category,
+            entity=source.legacy_entity,
+            keywords=list(source.keywords),
+            urls=[endpoint.url for endpoint in source.endpoints if endpoint.url],
+        )
+        for source in registry.authority_sources()
+    ]
     matches = scan_authorities(question, entries)
+    routing = _source_router().plan(question)
     return {
         "task": to_dict(task),
         "queries": [to_dict(item) for item in plan_queries(task)],
@@ -38,6 +56,22 @@ def plan(question: str, requirements: list[str] | None = None) -> dict[str, Any]
                 }
                 for item in matches
             ],
+        },
+        "source_catalog": registry.full_scan_report(),
+        "source_routing": {
+            "intents": routing.intents,
+            "routes": [
+                {
+                    "source_id": item.source_id,
+                    "role": item.role,
+                    "score": item.score,
+                    "reasons": item.reasons,
+                }
+                for item in routing.routes
+            ],
+            "evaluated_sources": routing.evaluated_sources,
+            "catalog_scan_completed": routing.catalog_scan_completed,
+            "discovery_policy": routing.discovery_policy,
         },
         "required_sources": list(REQUIRED_SOURCES),
         "execution_mode": "parallel",

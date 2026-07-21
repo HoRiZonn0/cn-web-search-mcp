@@ -131,11 +131,13 @@ def _status(code: int, body: str, results: list[SearchResult]) -> StageStatus:
 
 
 class HtmlSearchAdapter:
-    def __init__(self, name: str, endpoint: str, client: HttpClient, settings: Settings):
+    def __init__(self, name: str, endpoint: str, client: HttpClient, settings: Settings, *, source_id: str, endpoint_id: str):
         self.name = name
         self.endpoint = endpoint
         self.client = client
         self.settings = settings
+        self.source_id = source_id
+        self.endpoint_ids = {endpoint_id}
 
     def search(self, query: Query) -> EngineResponse:
         url = self.endpoint.format(query=quote_plus(query.text))
@@ -158,6 +160,8 @@ class HtmlSearchAdapter:
 
 class BingRssAdapter:
     name = "bing_rss"
+    source_id = "search-bing-rss"
+    endpoint_ids = {"discovery-bing-rss"}
 
     def __init__(self, client: HttpClient, settings: Settings):
         self.client = client
@@ -200,6 +204,8 @@ class BingRssAdapter:
 
 class WebSearchAdapter:
     name = "web_search"
+    source_id = "search-web"
+    endpoint_ids = {"discovery-web-search"}
 
     def __init__(self, client: HttpClient, settings: Settings):
         self.client = client
@@ -278,8 +284,31 @@ class WebSearchAdapter:
 def build_search_adapters(settings: Settings, client: HttpClient | None = None):
     client = client or HttpClient(settings)
     return [
-        HtmlSearchAdapter("360", "https://www.so.com/s?q={query}", client, settings),
-        HtmlSearchAdapter("sogou", "https://www.sogou.com/web?query={query}", client, settings),
+        HtmlSearchAdapter(
+            "360",
+            "https://www.so.com/s?q={query}",
+            client,
+            settings,
+            source_id="search-360",
+            endpoint_id="discovery-360",
+        ),
+        HtmlSearchAdapter(
+            "sogou",
+            "https://www.sogou.com/web?query={query}",
+            client,
+            settings,
+            source_id="search-sogou",
+            endpoint_id="discovery-sogou",
+        ),
         BingRssAdapter(client, settings),
         WebSearchAdapter(client, settings),
     ]
+
+
+def register_search_adapter_coverage(coverage) -> None:
+    """Register the four mandatory discovery adapters without opening network clients."""
+
+    coverage.register("search-360", ["discovery-360"])
+    coverage.register("search-sogou", ["discovery-sogou"])
+    coverage.register("search-bing-rss", ["discovery-bing-rss"])
+    coverage.register("search-web", ["discovery-web-search"])

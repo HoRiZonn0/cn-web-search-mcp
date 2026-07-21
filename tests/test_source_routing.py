@@ -16,7 +16,7 @@ class SourceRoutingTests(unittest.TestCase):
         self.assertIn("sports", plan.intents)
         self.assertIn("dongqiudi", source_ids)
         self.assertIn("sport", source_ids)
-        self.assertEqual(plan.evaluated_sources, 103)
+        self.assertEqual(plan.evaluated_sources, len(self.registry.all()))
         self.assertTrue(plan.catalog_scan_completed)
         self.assertEqual(plan.discovery_policy, "mandatory-four-source-set-remains-independent")
 

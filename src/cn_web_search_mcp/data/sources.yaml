@@ -1,10 +1,134 @@
 version: 2
-declared_sources: 103
+declared_sources: 107
 provenance:
   source_file: authoritative-sites.md
   source_sha256: 54a3291f177ad93cfbf33b694f5e53c46553e35a94914657932625e56a6a3850
   migration: scripts/migrate_authorities_to_yaml.py
 sources:
+- id: search-360
+  name: 360 搜索
+  legacy_entity: 360 搜索
+  legacy_category: 系统内置搜索渠道
+  categories:
+  - 开放网页搜索
+  keywords: []
+  domains:
+  - so.com
+  source_role: search_channel
+  authority: 1
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - web_search
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 10
+  endpoints:
+  - id: discovery-360
+    method: web_search
+    query_template: '{query}'
+    discovery_only: true
+    evidence_eligible: false
+    adapter: '360'
+  provenance: built-in mandatory discovery channel
+- id: search-sogou
+  name: 搜狗搜索
+  legacy_entity: 搜狗搜索
+  legacy_category: 系统内置搜索渠道
+  categories:
+  - 开放网页搜索
+  keywords: []
+  domains:
+  - sogou.com
+  source_role: search_channel
+  authority: 1
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - web_search
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 10
+  endpoints:
+  - id: discovery-sogou
+    method: web_search
+    query_template: '{query}'
+    discovery_only: true
+    evidence_eligible: false
+    adapter: sogou
+  provenance: built-in mandatory discovery channel
+- id: search-bing-rss
+  name: Bing RSS
+  legacy_entity: Bing RSS
+  legacy_category: 系统内置搜索渠道
+  categories:
+  - 开放网页搜索
+  keywords: []
+  domains:
+  - cn.bing.com
+  source_role: search_channel
+  authority: 1
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - web_search
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 10
+  endpoints:
+  - id: discovery-bing-rss
+    method: web_search
+    query_template: '{query}'
+    discovery_only: true
+    evidence_eligible: false
+    adapter: bing_rss
+  provenance: built-in mandatory discovery channel
+- id: search-web
+  name: Web Search
+  legacy_entity: Web Search
+  legacy_category: 系统内置搜索渠道
+  categories:
+  - 开放网页搜索
+  keywords: []
+  domains:
+  - duckduckgo.com
+  source_role: search_channel
+  authority: 1
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - web_search
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 10
+  endpoints:
+  - id: discovery-web-search
+    method: web_search
+    query_template: '{query}'
+    discovery_only: true
+    evidence_eligible: false
+    adapter: web_search
+  provenance: built-in mandatory discovery channel
 - id: dev
   name: React
   legacy_entity: React

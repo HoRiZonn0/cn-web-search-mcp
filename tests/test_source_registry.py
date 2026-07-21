@@ -15,7 +15,8 @@ class SourceRegistryTests(unittest.TestCase):
         markdown = files("cn_web_search_mcp").joinpath("data/authoritative-sites.md")
         legacy = load_authority_entries(str(markdown))
 
-        self.assertEqual(len(legacy), registry.catalog.declared_sources)
+        migrated_sources = registry.authority_sources()
+        self.assertEqual(len(legacy), len(migrated_sources))
         self.assertEqual(
             [
                 (item.entity, item.category, item.keywords, item.urls)
@@ -28,12 +29,13 @@ class SourceRegistryTests(unittest.TestCase):
                     source.keywords,
                     [endpoint.url for endpoint in source.endpoints],
                 )
-                for source in registry.catalog.sources
+                for source in migrated_sources
             ],
         )
         report = registry.full_scan_report()
         self.assertTrue(report["validation_completed"])
         self.assertEqual(report["declared_sources"], report["loaded_sources"])
+        self.assertEqual(report["loaded_sources"], len(legacy) + 4)
 
     def test_duplicate_yaml_mapping_key_is_rejected(self):
         content = """\

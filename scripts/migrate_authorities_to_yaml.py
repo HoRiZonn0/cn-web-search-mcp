@@ -20,6 +20,14 @@ if str(SRC) not in sys.path:
 from cn_web_search_mcp.core.knowledge.loader import load_authority_entries  # noqa: E402
 
 
+BUILTIN_DISCOVERY_SOURCES = (
+    ("search-360", "360 搜索", "so.com", "discovery-360", "360"),
+    ("search-sogou", "搜狗搜索", "sogou.com", "discovery-sogou", "sogou"),
+    ("search-bing-rss", "Bing RSS", "cn.bing.com", "discovery-bing-rss", "bing_rss"),
+    ("search-web", "Web Search", "duckduckgo.com", "discovery-web-search", "web_search"),
+)
+
+
 def _clean_category(value: str) -> str:
     return re.sub(r"^[^\w\u4e00-\u9fff]+", "", value).strip()
 
@@ -36,7 +44,42 @@ def _base_id(url: str) -> str:
 def build_catalog(markdown_path: Path) -> dict:
     entries = load_authority_entries(markdown_path)
     counts: Counter[str] = Counter()
-    sources = []
+    sources = [
+        {
+            "id": source_id,
+            "name": name,
+            "legacy_entity": name,
+            "legacy_category": "系统内置搜索渠道",
+            "categories": ["开放网页搜索"],
+            "keywords": [],
+            "domains": [domain],
+            "source_role": "search_channel",
+            "authority": 1,
+            "reliability": "unknown",
+            "languages": ["zh-CN"],
+            "capabilities": ["web_search"],
+            "enabled": True,
+            "fallback_source_ids": [],
+            "rate_policy": {
+                "serial_only": False,
+                "minimum_interval_seconds": 0,
+                "max_concurrency": 1,
+                "timeout_seconds": 10,
+            },
+            "endpoints": [
+                {
+                    "id": endpoint_id,
+                    "method": "web_search",
+                    "query_template": "{query}",
+                    "discovery_only": True,
+                    "evidence_eligible": False,
+                    "adapter": adapter,
+                }
+            ],
+            "provenance": "built-in mandatory discovery channel",
+        }
+        for source_id, name, domain, endpoint_id, adapter in BUILTIN_DISCOVERY_SOURCES
+    ]
     for index, entry in enumerate(entries, 1):
         base = _base_id(entry.urls[0]) if entry.urls else f"source-{index:03d}"
         counts[base] += 1
