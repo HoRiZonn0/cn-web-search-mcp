@@ -1,4 +1,4 @@
-"""Intent-routed structured sources that complement mandatory web discovery."""
+"""Compatibility layer for routed catalog adapters and their batch runner."""
 
 from __future__ import annotations
 
@@ -271,6 +271,11 @@ async def run_structured_sources(
     timeout_seconds: float,
     max_concurrency: int = 3,
 ) -> StructuredExecution:
+    """Run any routed catalog adapters with bounded independent failures.
+
+    The historical function name remains public for compatibility; adapters may
+    now be direct structured APIs or catalog domain-discovery implementations.
+    """
     execution = StructuredExecution()
     if not adapters or not queries:
         return execution

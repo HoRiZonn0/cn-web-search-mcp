@@ -12,10 +12,8 @@ from mcp.server.auth.provider import AccessToken
 from mcp.server.auth.settings import AuthSettings
 
 from .config import Settings
-from .core.sources import RuntimeCoverageRegistry, SourceRegistry, SourceRouter
+from .core.sources import SourceRegistry, SourceRouter, build_source_adapter_registry
 from .jobs import JobService
-from .search_adapters import register_search_adapter_coverage
-from .structured_adapters import register_structured_adapter_coverage
 
 
 class _StaticTokenVerifier:
@@ -33,9 +31,8 @@ def create_server(settings: Settings | None = None, service: JobService | None =
     service = service or JobService(settings)
     source_registry = SourceRegistry.load_default()
     source_router = SourceRouter.load_default(source_registry)
-    source_coverage = RuntimeCoverageRegistry()
-    register_search_adapter_coverage(source_coverage)
-    register_structured_adapter_coverage(source_coverage)
+    source_adapters = build_source_adapter_registry(settings, sources=source_registry)
+    source_coverage = source_adapters.coverage()
     base_url = f"http://{settings.host}:{settings.port}"
     auth = None
     verifier = None

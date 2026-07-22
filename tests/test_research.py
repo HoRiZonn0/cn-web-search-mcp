@@ -9,6 +9,8 @@ from pathlib import Path
 from cn_web_search_mcp.config import Settings
 from cn_web_search_mcp.core.engines import EngineResponse, REQUIRED_SOURCES
 from cn_web_search_mcp.core.models import SearchResult, StageStatus
+from cn_web_search_mcp.core.sources import SourceAdapterRegistry, SourceRegistry
+from cn_web_search_mcp.core.sources.adapters.catalog import CatalogDiscoveryAdapter
 from cn_web_search_mcp.jobs import JobService
 from cn_web_search_mcp.research import ResearchRunner
 from cn_web_search_mcp.store import JobStore
@@ -61,6 +63,30 @@ class FakeFetcher:
                 )
             )
         return enriched
+
+
+class FakeWebBackend:
+    name = "web_search"
+
+    def __init__(self):
+        self.queries = []
+
+    def search(self, query):
+        self.queries.append(query.text)
+        return EngineResponse(
+            StageStatus.SUCCESS,
+            [
+                SearchResult(
+                    result_id="vertical-result",
+                    engine=self.name,
+                    query_id=query.id,
+                    title="世界杯官方赛程整理",
+                    url="https://www.dongqiudi.com/article/123",
+                    snippet="世界杯赛程信息",
+                    matched_requirement_ids=list(query.requirement_ids),
+                )
+            ],
+        )
 
 
 class FakeJobRunner:
@@ -118,6 +144,39 @@ class ResearchTests(unittest.TestCase):
             self.assertEqual("unresolvable", result["status"])
             self.assertEqual(2, result["trace_summary"]["rounds"])
             self.assertEqual(8, len(calls))
+
+    def test_intent_route_executes_catalog_source_adapter(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            settings = self.settings(root)
+            store = JobStore(root / "jobs.sqlite3", root / "artifacts")
+            calls = []
+            mandatory = [FakeAdapter(name, calls) for name in REQUIRED_SOURCES]
+            sources = SourceRegistry.load_default()
+            source_adapters = SourceAdapterRegistry(sources)
+            backend = FakeWebBackend()
+            source_adapters.register(
+                CatalogDiscoveryAdapter(sources.get("dongqiudi"), backend)
+            )
+            runner = ResearchRunner(
+                settings,
+                store,
+                adapters=mandatory,
+                source_adapters=source_adapters,
+                fetcher=FakeFetcher(),
+            )
+
+            result = runner.run(
+                {
+                    "question": "查询世界杯赛程",
+                    "requirements": ["世界杯赛程"],
+                    "max_rounds": 1,
+                }
+            )
+
+            self.assertTrue(backend.queries)
+            self.assertIn("site:dongqiudi.com", backend.queries[0])
+            self.assertIn("catalog_dongqiudi", result["trace_summary"]["routed_sources"])
 
     def test_job_service_runs_in_background_and_persists_result(self):
         with tempfile.TemporaryDirectory() as directory:
