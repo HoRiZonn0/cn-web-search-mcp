@@ -4,7 +4,7 @@ from .models import CatalogProvenance, EndpointDefinition, RatePolicy, SourceCat
 from .registry import DuplicateYamlKeyError, SourceRegistry
 from .coverage import RuntimeCoverageRegistry
 from .routing import PlannedSourceRoute, SourceRouter, SourceRoutingPlan
-from .adapters import CatalogSourceAdapter, SourceAdapterRegistry
+from .adapters import CatalogSourceAdapter, SourceAdapterRegistry, build_source_adapter_registry
 
 __all__ = [
     "CatalogProvenance",
@@ -20,4 +20,5 @@ __all__ = [
     "SourceRouter",
     "SourceRoutingPlan",
     "PlannedSourceRoute",
+    "build_source_adapter_registry",
 ]

@@ -41,6 +41,7 @@ class CrossrefSearchAdapter:
     name = "crossref_api"
     source_id = "crossref"
     endpoint_ids = {"crossref-works-api"}
+    discovery_endpoint_ids: set[str] = set()
 
     def __init__(self, client: HttpClient, settings: Settings):
         self.client = client
@@ -99,6 +100,7 @@ class ArxivSearchAdapter:
     name = "arxiv_api"
     source_id = "arxiv"
     endpoint_ids = {"arxiv-query-api"}
+    discovery_endpoint_ids: set[str] = set()
     _ATOM = "{http://www.w3.org/2005/Atom}"
 
     def __init__(self, client: HttpClient, settings: Settings):
@@ -148,6 +150,95 @@ class ArxivSearchAdapter:
             return EngineResponse(StageStatus.ERROR, error=str(exc))
 
 
+class PubMedSearchAdapter:
+    """PubMed E-utilities adapter using the public JSON endpoints."""
+
+    name = "pubmed_api"
+    source_id = "nih"
+    endpoint_ids = {"pubmed-eutils-api"}
+    discovery_endpoint_ids: set[str] = set()
+
+    def __init__(self, client: HttpClient, settings: Settings):
+        self.client = client
+        self.settings = settings
+
+    def search(self, query: Query) -> EngineResponse:
+        search_url = (
+            "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi"
+            f"?db=pubmed&retmode=json&retmax={self.settings.max_results_per_source}"
+            f"&term={quote_plus(query.text)}"
+        )
+        try:
+            search_response = self.client.get(
+                search_url, timeout=self.settings.request_timeout_seconds
+            )
+            if not 200 <= search_response.status_code < 400:
+                return EngineResponse(
+                    StageStatus.ERROR,
+                    error=f"HTTP {search_response.status_code}",
+                )
+            search_payload = json.loads(decode_body(search_response))
+            identifiers = [
+                str(value)
+                for value in search_payload.get("esearchresult", {}).get("idlist", [])
+                if str(value).strip()
+            ]
+            if not identifiers:
+                return EngineResponse(StageStatus.EMPTY)
+
+            summary_url = (
+                "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi"
+                f"?db=pubmed&retmode=json&id={quote_plus(','.join(identifiers))}"
+            )
+            summary_response = self.client.get(
+                summary_url, timeout=self.settings.request_timeout_seconds
+            )
+            if not 200 <= summary_response.status_code < 400:
+                return EngineResponse(
+                    StageStatus.ERROR,
+                    error=f"HTTP {summary_response.status_code}",
+                )
+            payload = json.loads(decode_body(summary_response)).get("result", {})
+            results: list[SearchResult] = []
+            for identifier in identifiers:
+                item = payload.get(identifier, {})
+                title = _plain_text(str(item.get("title") or ""))
+                if not title:
+                    continue
+                target = f"https://pubmed.ncbi.nlm.nih.gov/{identifier}/"
+                authors = "; ".join(
+                    str(author.get("name", "")).strip()
+                    for author in item.get("authors", [])[:5]
+                    if str(author.get("name", "")).strip()
+                )
+                results.append(
+                    SearchResult(
+                        result_id=_result_id(self.name, query.id, target),
+                        engine=self.name,
+                        query_id=query.id,
+                        title=title[:500],
+                        url=target,
+                        snippet=authors[:1000],
+                        publisher=str(item.get("fulljournalname") or "PubMed"),
+                        published_at=str(item.get("pubdate") or "").strip() or None,
+                        content=authors,
+                        content_status="fetched" if authors else "not_fetched",
+                        source_role="primary_official",
+                        discovered_by=[self.name],
+                        matched_requirement_ids=list(query.requirement_ids),
+                        search_channel="structured_source",
+                        search_backend="pubmed-eutils",
+                        upstream_engine="pubmed",
+                    )
+                )
+            return EngineResponse(
+                StageStatus.SUCCESS if results else StageStatus.EMPTY,
+                results,
+            )
+        except Exception as exc:
+            return EngineResponse(StageStatus.ERROR, error=str(exc))
+
+
 @dataclass(slots=True)
 class StructuredExecution:
     stages: list[StageRecord] = field(default_factory=list)
@@ -162,6 +253,7 @@ def build_structured_adapters(
     adapters = {
         "crossref": CrossrefSearchAdapter(client, settings),
         "arxiv": ArxivSearchAdapter(client, settings),
+        "nih": PubMedSearchAdapter(client, settings),
     }
     return [adapter for source_id, adapter in adapters.items() if source_id in selected_source_ids]
 
@@ -169,6 +261,7 @@ def build_structured_adapters(
 def register_structured_adapter_coverage(coverage) -> None:
     coverage.register("crossref", ["crossref-works-api"])
     coverage.register("arxiv", ["arxiv-query-api"])
+    coverage.register("nih", ["pubmed-eutils-api"])
 
 
 async def run_structured_sources(
