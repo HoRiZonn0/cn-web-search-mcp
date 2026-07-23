@@ -25,6 +25,19 @@ class ConfigTests(unittest.IsolatedAsyncioTestCase):
             with self.assertRaisesRegex(ValueError, "requires CNWS_MCP_BEARER_TOKEN"):
                 Settings.from_env()
 
+    def test_remote_rest_api_requires_separate_token(self):
+        with tempfile.TemporaryDirectory() as directory, patch.dict(
+            os.environ,
+            {
+                "CNWS_DATA_DIR": directory,
+                "CNWS_API_HOST": "0.0.0.0",
+                "CNWS_API_BEARER_TOKEN": "",
+            },
+            clear=False,
+        ):
+            with self.assertRaisesRegex(ValueError, "requires CNWS_API_BEARER_TOKEN"):
+                Settings.from_env()
+
     async def test_static_token_verifier_uses_exact_token(self):
         verifier = _StaticTokenVerifier("correct-token")
         accepted = await verifier.verify_token("correct-token")

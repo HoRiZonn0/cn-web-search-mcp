@@ -4,14 +4,16 @@ build-backend = "hatchling.build"
 
 [project]
 name = "cn-web-search-mcp"
-version = "0.2.0"
-description = "Autonomous Chinese web research MCP server"
+version = "0.3.0"
+description = "Autonomous Chinese web research service with MCP and REST APIs"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+  "fastapi>=0.115,<1",
   "mcp>=1.27,<2",
   "pydantic>=2.8,<3",
   "PyYAML>=6,<7",
+  "uvicorn>=0.31,<1",
 ]
 
 [project.urls]
@@ -21,6 +23,7 @@ Repository = "https://github.com/HoRiZonn0/cn-web-search-mcp"
 dev = ["pytest>=8", "pytest-asyncio>=0.23"]
 
 [project.scripts]
+cn-web-search-api = "cn_web_search_mcp.api_main:main"
 cn-web-search-mcp = "cn_web_search_mcp.__main__:main"
 
 [tool.hatch.build.targets.wheel]

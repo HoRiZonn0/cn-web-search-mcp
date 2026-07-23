@@ -23,6 +23,10 @@ class Settings:
     transport: str = "stdio"
     host: str = "127.0.0.1"
     port: int = 8765
+    api_host: str = "127.0.0.1"
+    api_port: int = 8766
+    api_bearer_token: str | None = None
+    api_sync_timeout_seconds: float = 120.0
     user_agent: str = DEFAULT_USER_AGENT
     proxy_url: str | None = None
     searxng_endpoint: str | None = None
@@ -49,6 +53,12 @@ class Settings:
             transport=os.getenv("CNWS_MCP_TRANSPORT", "stdio"),
             host=os.getenv("CNWS_MCP_HOST", "127.0.0.1"),
             port=int(os.getenv("CNWS_MCP_PORT", "8765")),
+            api_host=os.getenv("CNWS_API_HOST", "127.0.0.1"),
+            api_port=int(os.getenv("CNWS_API_PORT", "8766")),
+            api_bearer_token=os.getenv("CNWS_API_BEARER_TOKEN") or None,
+            api_sync_timeout_seconds=float(
+                os.getenv("CNWS_API_SYNC_TIMEOUT_SECONDS", "120")
+            ),
             user_agent=os.getenv("CNWS_USER_AGENT", DEFAULT_USER_AGENT),
             proxy_url=os.getenv("CNWS_PROXY_URL") or None,
             searxng_endpoint=os.getenv("CNWS_SEARXNG_ENDPOINT") or None,
@@ -71,6 +81,17 @@ class Settings:
             raise ValueError("CNWS_MCP_TRANSPORT must be stdio or streamable-http")
         if settings.web_search_backend not in {"auto", "searxng", "duckduckgo"}:
             raise ValueError("CNWS_WEB_SEARCH_BACKEND must be auto, searxng, or duckduckgo")
+        if not 1 <= settings.api_port <= 65535:
+            raise ValueError("CNWS_API_PORT must be between 1 and 65535")
+        if settings.api_sync_timeout_seconds <= 0:
+            raise ValueError("CNWS_API_SYNC_TIMEOUT_SECONDS must be positive")
+        if (
+            settings.api_host not in {"127.0.0.1", "localhost", "::1"}
+            and not settings.api_bearer_token
+        ):
+            raise ValueError(
+                "non-loopback REST API binding requires CNWS_API_BEARER_TOKEN"
+            )
         if (
             settings.transport == "streamable-http"
             and settings.host not in {"127.0.0.1", "localhost", "::1"}
