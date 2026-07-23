@@ -15,7 +15,7 @@
 - **较小模型上下文**：完整规则库和网页正文保留在服务端，只向宿主模型返回必要事实、证据片段和 URL。
 - **本地持久化**：任务、缓存、证据和域名健康信息写入 SQLite 与本地产物目录。
 - **结构化来源目录**：一次性加载并校验 YAML，区分已登记来源、可执行端点和仅用于发现的入口。
-- **意图定向来源**：四源搜索之外，学术查询可额外使用 Crossref 与 arXiv 结构化接口；失败不会影响四源完成判定。
+- **意图定向来源**：四源搜索之外，路由选中的目录来源会通过独立的域名定向 Adapter 搜索；学术查询还可直接调用 Crossref、arXiv 与 PubMed API。
 
 ## 工作方式
 
@@ -26,7 +26,9 @@ MCP 客户端 / Agent
     -> 完整扫描权威来源规则
     -> 查询规划与缺口分析
     -> 360 / 搜狗 / Bing RSS / web_search
-    -> 按意图选择的结构化来源（当前为 Crossref / arXiv）
+    -> 按意图选择的目录来源 Adapter
+       -> 来源域名定向发现
+       -> Crossref / arXiv / PubMed 结构化 API
     -> 候选去重与正文抓取
        -> HTTP
        -> 可选 Firecrawl 后备
@@ -38,7 +40,7 @@ MCP 客户端 / Agent
 
 这里的“四源”表示四个必须尝试的逻辑搜索来源，不等于四个独立发布者。互证强度按正文发布者和原始信息来源判断，不能只按搜索渠道数量判断。
 
-来源目录当前包含108个来源定义：103条由旧权威网址知识库无损迁移的条目、4个必需搜索渠道和1个新增 Crossref 来源。运行覆盖报告当前列出6个可执行端点；目录中其余入口只是元数据或发现线索，不能据此宣称已经实现对应搜索能力。
+来源目录当前包含108个来源定义：103条由旧权威网址知识库无损迁移的条目、4个必需搜索渠道和1个新增 Crossref 来源。运行覆盖报告当前列出7个直接可执行端点，并单独列出目录来源的 `discovery_only` 入口。发现入口会生成 `site:domain` 定向查询并过滤非目标域名结果，但不能冒充来源自身 API 或直接事实证据。
 
 ## 快速开始
 
@@ -130,12 +132,15 @@ queued -> running -> completed
 3. Bing RSS；
 4. `web_search`。
 
-四源用于开放网页发现。结构化来源属于附加通道，只在匹配意图时执行，不会替代或跳过其中任何一源。当前学术类问题可路由到：
+四源用于开放网页发现。YAML 目录中的来源属于附加通道，只在匹配意图时执行，不会替代或跳过其中任何一源。每个被选来源都有独立 Adapter 实例：普通目录来源通过共享 Web Search 后端生成域名限定查询，并再次按域名过滤结果；存在公开结构化接口的来源优先增加直接 API Adapter。
+
+当前学术类问题可直接路由到：
 
 - Crossref Works API；
-- arXiv Query API。
+- arXiv Query API；
+- PubMed E-utilities（ESearch + ESummary）。
 
-PubMed E-utilities 已登记但尚未实现 Adapter，因此会在覆盖报告中显示为 `not_implemented`。
+`cnws://sources/coverage` 将能力分为：`executable`（直接运行端点）、`discovery_only`（借助搜索后端发现该站内容）和 `not_implemented`（尚无运行实现）。
 
 `web_search` 默认自动选择后端：配置 `CNWS_SEARXNG_ENDPOINT` 时使用 SearXNG，否则使用 DuckDuckGo HTML。
 
@@ -235,6 +240,7 @@ $env:CNWS_MCP_BEARER_TOKEN = "<长随机值>"
 ```text
 cn-web-search-mcp/
 ├── src/cn_web_search_mcp/  # MCP 服务、任务编排、搜索与抓取实现
+│   ├── core/sources/adapters/ # 来源 Adapter 协议、注册表、工厂与目录适配器
 │   └── data/               # YAML 来源目录、路由策略和迁移期 Markdown
 ├── tests/                  # 单元测试与协议测试
 ├── references/             # 部署说明和架构边界

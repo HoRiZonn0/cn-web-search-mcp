@@ -39,8 +39,9 @@ class McpProtocolTests(unittest.IsolatedAsyncioTestCase):
                     self.assertEqual(catalog["declared_sources"], 108)
                     coverage_resource = await session.read_resource("cnws://sources/coverage")
                     coverage = json.loads(coverage_resource.contents[0].text)
-                    self.assertEqual(coverage["executable_endpoint_count"], 6)
-                    self.assertIn("pubmed-eutils-api", coverage["sources"]["nih"]["not_implemented"])
+                    self.assertEqual(coverage["executable_endpoint_count"], 7)
+                    self.assertGreater(coverage["discovery_endpoint_count"], 90)
+                    self.assertIn("pubmed-eutils-api", coverage["sources"]["nih"]["executable"])
 
 
 if __name__ == "__main__":

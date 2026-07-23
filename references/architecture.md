@@ -8,9 +8,9 @@ MCP tools
       → SourceRouter（意图定向提示）
       → Search Core
       → 360 / Sogou / Bing RSS / Web Search adapters
-      → optional structured adapters
-        → Crossref
-        → arXiv
+      → SourceAdapterRegistry
+        → intent-routed catalog discovery adapters
+        → Crossref / arXiv / PubMed direct API adapters
       → ContentFetcher
         → HTTP first
         → optional Firecrawl fallback
@@ -30,6 +30,7 @@ MCP tools
 7. 抓取失败不会终止整批任务；配置 Firecrawl 后，受阻域名会自动升级抓取后端。
 8. YAML 中的来源声明不等于运行能力；只有注册 Adapter 的端点才是 executable。
 9. 结构化定向来源只能补充四源结果，不能替代四源完整执行。
+10. 目录主页通过域名定向搜索只产生候选线索；覆盖报告不得把它计为来源自身的直接 API。
 
 ## 来源目录
 
@@ -42,6 +43,14 @@ MCP tools
 - fallback 引用完整性检查。
 
 `routing.yaml` 只负责生成主源、备源和核验源提示。来源健康度、响应时间和熔断状态仍保存在 SQLite，不写回静态 YAML。
+
+`SourceAdapterRegistry` 在启动时把代码实现绑定到 YAML 的来源 ID 和端点 ID。注册的端点若不属于对应来源，服务会立即拒绝启动。运行覆盖分为：
+
+- `executable`：来源自身的直接搜索/API 实现；
+- `discovery_only`：通过共享 Web Search 后端执行 `site:domain` 定向发现，并过滤非目标域名；
+- `not_implemented`：仅有目录声明，尚无可运行实现。
+
+研究任务先完成四源搜索，再并发执行意图路由选中的来源 Adapter。一个定向来源失败只形成独立阶段记录，不影响其他来源和四源完成状态。
 
 当前处于迁移期：旧 Markdown 保留用于无损等价测试，但线上规划已经不再直接解析 Markdown。
 

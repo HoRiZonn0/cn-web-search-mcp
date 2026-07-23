@@ -15,6 +15,8 @@
 4. API Key 只写环境变量名 `key_env`，不得把密钥写入目录。
 5. 新增 fallback 时必须引用已存在且不同于自身的来源 ID。
 6. 四个必需搜索渠道始终执行；意图定向来源只能补充结果。
+7. 每个 Adapter 必须通过 `SourceAdapterRegistry` 绑定已有来源和端点；不得手写与 YAML 脱节的覆盖清单。
+8. `discovery_only` Adapter 可以执行域名定向搜索，但不得计入来源自身直接 API 的 `executable` 覆盖。
 
 ## 迁移期生成与检查
 
@@ -26,10 +28,10 @@
 
 该命令会覆盖 `sources.yaml`。迁移期新增的系统来源也必须同步维护在迁移脚本中，直至旧 Markdown 正式退役。
 
-运行完整校验：
+运行来源目录与 Adapter 校验：
 
 ```powershell
-.\.venv\Scripts\python.exe -m unittest tests.test_source_registry tests.test_source_routing -v
+.\.venv\Scripts\python.exe -m pytest tests/test_source_registry.py tests/test_source_routing.py tests/test_source_adapters.py -q
 ```
 
 查看 MCP 诊断：
