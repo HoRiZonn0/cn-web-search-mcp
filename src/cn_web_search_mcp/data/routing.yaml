@@ -1,0 +1,71 @@
+version: 1
+intents:
+  - id: news
+    keywords: [新闻, 快讯, 资讯, 热点, 头条, 今日要闻]
+    categories: [新闻/资讯, 热点/热搜]
+    preferred_source_ids: [people, caixin, baidu]
+    verification_source_ids: []
+    max_sources: 3
+
+  - id: technology
+    keywords: [科技, 人工智能, AI, 大模型, 芯片, 软件, 编程, 开源]
+    categories: [计算机/编程, AI / 机器学习, 购物/消费]
+    preferred_source_ids: [openai, pytorch, hf-mirror, ifanr]
+    verification_source_ids: []
+    max_sources: 4
+
+  - id: academic
+    keywords: [论文, 研究, 学术, 期刊, 预印本, 文献]
+    categories: [学术/教育]
+    preferred_source_ids: [crossref, arxiv, nih, cnki]
+    verification_source_ids: []
+    max_sources: 3
+
+  - id: finance
+    keywords: [股票, A股, 行情, 财报, 央行, 利率, LPR, 基金, 证券, 交易所]
+    categories: [金融/投资, 市场调研/行业报告]
+    preferred_source_ids: [eastmoney, 10jqka, pbc, csrc, cninfo]
+    verification_source_ids: [pbc, csrc, sse, szse]
+    max_sources: 4
+
+  - id: policy
+    keywords: [政策, 法律, 法规, 司法解释, 监管, 部委, 国家标准]
+    categories: [法律/政策, 百科/知识]
+    preferred_source_ids: [pkulaw, stats]
+    verification_source_ids: []
+    max_sources: 3
+
+  - id: health
+    keywords: [医疗, 健康, 疾病, 症状, 治疗, 用药, 疫苗, 疫情]
+    categories: [医疗/健康]
+    preferred_source_ids: [msdmanuals, dxy, dxy-2]
+    verification_source_ids: [int, chinacdc]
+    max_sources: 4
+
+  - id: travel
+    keywords: [旅游, 酒店, 机票, 火车票, 高铁, 航班, 景点]
+    categories: [旅游/出行]
+    preferred_source_ids: ["12306", csair, ctrip]
+    verification_source_ids: []
+    max_sources: 3
+
+  - id: sports
+    keywords: [体育, 足球, 篮球, 世界杯, NBA, CBA, 欧冠, 比分, 赛程]
+    categories: [体育/健身]
+    preferred_source_ids: [dongqiudi, qq, hupu]
+    verification_source_ids: [sport]
+    max_sources: 4
+
+  - id: entertainment
+    keywords: [电影, 电视剧, 综艺, 音乐, 演唱会, 动漫]
+    categories: [娱乐/影视]
+    preferred_source_ids: [douban, bilibili, qq-2]
+    verification_source_ids: []
+    max_sources: 3
+
+  - id: general
+    keywords: []
+    categories: []
+    preferred_source_ids: []
+    verification_source_ids: []
+    max_sources: 3

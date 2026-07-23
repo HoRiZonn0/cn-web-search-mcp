@@ -9,7 +9,8 @@ from cn_web_search_mcp.config import Settings
 from cn_web_search_mcp.content_fetcher import ContentFetcher
 from cn_web_search_mcp.core.models import Query, SearchResult, StageStatus
 from cn_web_search_mcp.network import HttpResponse, UnsafeUrlError, validate_public_url
-from cn_web_search_mcp.search_adapters import BingRssAdapter, WebSearchAdapter
+from cn_web_search_mcp.search_adapters import BingRssAdapter, WebSearchAdapter, register_search_adapter_coverage
+from cn_web_search_mcp.core.sources import RuntimeCoverageRegistry, SourceRegistry
 from cn_web_search_mcp.store import JobStore
 
 
@@ -28,6 +29,15 @@ class FakeClient:
 
 
 class AdapterTests(unittest.TestCase):
+    def test_mandatory_search_adapters_are_reported_as_executable(self):
+        registry = SourceRegistry.load_default()
+        coverage = RuntimeCoverageRegistry()
+        register_search_adapter_coverage(coverage)
+        report = coverage.report(registry)
+        self.assertEqual(report["executable_endpoint_count"], 4)
+        for source_id in ("search-360", "search-sogou", "search-bing-rss", "search-web"):
+            self.assertEqual(len(report["sources"][source_id]["executable"]), 1)
+
     def settings(self, root: Path, **changes):
         values = {"data_dir": root, **changes}
         return Settings(**values)

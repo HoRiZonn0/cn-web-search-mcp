@@ -1,0 +1,3939 @@
+version: 2
+declared_sources: 108
+provenance:
+  source_file: authoritative-sites.md
+  source_sha256: 54a3291f177ad93cfbf33b694f5e53c46553e35a94914657932625e56a6a3850
+  migration: scripts/migrate_authorities_to_yaml.py
+sources:
+- id: search-360
+  name: 360 搜索
+  legacy_entity: 360 搜索
+  legacy_category: 系统内置搜索渠道
+  categories:
+  - 开放网页搜索
+  keywords: []
+  domains:
+  - so.com
+  source_role: search_channel
+  authority: 1
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - web_search
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 10
+  endpoints:
+  - id: discovery-360
+    method: web_search
+    query_template: '{query}'
+    discovery_only: true
+    evidence_eligible: false
+    adapter: '360'
+  provenance: built-in mandatory discovery channel
+- id: search-sogou
+  name: 搜狗搜索
+  legacy_entity: 搜狗搜索
+  legacy_category: 系统内置搜索渠道
+  categories:
+  - 开放网页搜索
+  keywords: []
+  domains:
+  - sogou.com
+  source_role: search_channel
+  authority: 1
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - web_search
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 10
+  endpoints:
+  - id: discovery-sogou
+    method: web_search
+    query_template: '{query}'
+    discovery_only: true
+    evidence_eligible: false
+    adapter: sogou
+  provenance: built-in mandatory discovery channel
+- id: search-bing-rss
+  name: Bing RSS
+  legacy_entity: Bing RSS
+  legacy_category: 系统内置搜索渠道
+  categories:
+  - 开放网页搜索
+  keywords: []
+  domains:
+  - cn.bing.com
+  source_role: search_channel
+  authority: 1
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - web_search
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 10
+  endpoints:
+  - id: discovery-bing-rss
+    method: web_search
+    query_template: '{query}'
+    discovery_only: true
+    evidence_eligible: false
+    adapter: bing_rss
+  provenance: built-in mandatory discovery channel
+- id: search-web
+  name: Web Search
+  legacy_entity: Web Search
+  legacy_category: 系统内置搜索渠道
+  categories:
+  - 开放网页搜索
+  keywords: []
+  domains:
+  - duckduckgo.com
+  source_role: search_channel
+  authority: 1
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - web_search
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 10
+  endpoints:
+  - id: discovery-web-search
+    method: web_search
+    query_template: '{query}'
+    discovery_only: true
+    evidence_eligible: false
+    adapter: web_search
+  provenance: built-in mandatory discovery channel
+- id: crossref
+  name: Crossref
+  legacy_entity: Crossref
+  legacy_category: 系统内置结构化来源
+  categories:
+  - 学术/教育
+  keywords:
+  - crossref
+  - doi
+  - 论文
+  - 期刊
+  - 文献
+  domains:
+  - api.crossref.org
+  - doi.org
+  source_role: curated_reference
+  authority: 4
+  reliability: high
+  languages:
+  - zh-CN
+  - en
+  capabilities:
+  - academic_search
+  - structured_metadata
+  enabled: true
+  fallback_source_ids:
+  - arxiv
+  - nih
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 2
+    timeout_seconds: 12
+  endpoints:
+  - id: crossref-works-api
+    method: structured_api
+    url: https://api.crossref.org/works
+    discovery_only: false
+    evidence_eligible: true
+    adapter: crossref_api
+  provenance: built-in structured academic source
+- id: dev
+  name: React
+  legacy_entity: React
+  legacy_category: 💻 计算机/编程
+  categories:
+  - 计算机/编程
+  keywords:
+  - react
+  - hooks
+  - jsx
+  - redux
+  - next.js
+  - nextjs
+  - umi
+  - antd
+  - zustand
+  domains:
+  - zh-hans.react.dev
+  - react.dev
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: dev-entry-1
+    method: homepage
+    url: https://zh-hans.react.dev
+    discovery_only: true
+    evidence_eligible: false
+  - id: dev-entry-2
+    method: homepage
+    url: https://react.dev
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: vuejs
+  name: Vue
+  legacy_entity: Vue
+  legacy_category: 💻 计算机/编程
+  categories:
+  - 计算机/编程
+  keywords:
+  - vue
+  - vue3
+  - pinia
+  - vite
+  - nuxt
+  - nuxt3
+  - element plus
+  domains:
+  - vuejs.org
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: vuejs-entry-1
+    method: homepage
+    url: https://vuejs.org
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: dev-2
+  name: Angular
+  legacy_entity: Angular
+  legacy_category: 💻 计算机/编程
+  categories:
+  - 计算机/编程
+  keywords:
+  - angular
+  - rxjs
+  - ngrx
+  domains:
+  - angular.dev
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: dev-2-entry-1
+    method: homepage
+    url: https://angular.dev
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: dev-3
+  name: Svelte
+  legacy_entity: Svelte
+  legacy_category: 💻 计算机/编程
+  categories:
+  - 计算机/编程
+  keywords:
+  - svelte
+  - sveltekit
+  domains:
+  - svelte.dev
+  - svelte.cn
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: dev-3-entry-1
+    method: homepage
+    url: https://svelte.dev
+    discovery_only: true
+    evidence_eligible: false
+  - id: dev-3-entry-2
+    method: homepage
+    url: https://svelte.cn
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: nodejs
+  name: TypeScript
+  legacy_entity: TypeScript
+  legacy_category: 💻 计算机/编程
+  categories:
+  - 计算机/编程
+  keywords:
+  - typescript
+  - ts
+  - type
+  - interface
+  - enum
+  domains:
+  - ts.nodejs.cn
+  - typescriptlang.org
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: nodejs-entry-1
+    method: homepage
+    url: https://ts.nodejs.cn
+    discovery_only: true
+    evidence_eligible: false
+  - id: nodejs-entry-2
+    method: homepage
+    url: https://www.typescriptlang.org
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: mozilla
+  name: JavaScript / MDN
+  legacy_entity: JavaScript / MDN
+  legacy_category: 💻 计算机/编程
+  categories:
+  - 计算机/编程
+  keywords:
+  - javascript
+  - js
+  - es6
+  - es2023
+  - web api
+  - dom
+  - css
+  - html
+  - fetch
+  - canvas
+  domains:
+  - developer.mozilla.org
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: mozilla-entry-1
+    method: homepage
+    url: https://developer.mozilla.org/zh-CN
+    discovery_only: true
+    evidence_eligible: false
+  - id: mozilla-entry-2
+    method: homepage
+    url: https://developer.mozilla.org
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: nodejs-2
+  name: Node.js
+  legacy_entity: Node.js
+  legacy_category: 💻 计算机/编程
+  categories:
+  - 计算机/编程
+  keywords:
+  - node
+  - nodejs
+  - npm
+  - express
+  - koa
+  - fastify
+  - nestjs
+  domains:
+  - nodejs.cn
+  - nodejs.org
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: nodejs-2-entry-1
+    method: homepage
+    url: https://nodejs.cn
+    discovery_only: true
+    evidence_eligible: false
+  - id: nodejs-2-entry-2
+    method: homepage
+    url: https://nodejs.org
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: python
+  name: Python
+  legacy_entity: Python
+  legacy_category: 💻 计算机/编程
+  categories:
+  - 计算机/编程
+  keywords:
+  - python
+  - pip
+  - conda
+  - pandas
+  - numpy
+  - scipy
+  domains:
+  - docs.python.org
+  - pypi.org
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: python-entry-1
+    method: homepage
+    url: https://docs.python.org/zh-cn/3
+    discovery_only: true
+    evidence_eligible: false
+  - id: python-entry-2
+    method: homepage
+    url: https://docs.python.org/3
+    discovery_only: true
+    evidence_eligible: false
+  - id: python-entry-3
+    method: homepage
+    url: https://pypi.org
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: dev-4
+  name: Go
+  legacy_entity: Go
+  legacy_category: 💻 计算机/编程
+  categories:
+  - 计算机/编程
+  keywords:
+  - go
+  - golang
+  - gin
+  - echo
+  - gorm
+  domains:
+  - go.dev
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: dev-4-entry-1
+    method: homepage
+    url: https://go.dev
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: rustwiki
+  name: Rust
+  legacy_entity: Rust
+  legacy_category: 💻 计算机/编程
+  categories:
+  - 计算机/编程
+  keywords:
+  - rust
+  - cargo
+  - tokio
+  - actix
+  - serde
+  domains:
+  - rustwiki.org
+  - doc.rust-lang.org
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: rustwiki-entry-1
+    method: homepage
+    url: https://rustwiki.org
+    discovery_only: true
+    evidence_eligible: false
+  - id: rustwiki-entry-2
+    method: homepage
+    url: https://doc.rust-lang.org
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: springdoc
+  name: Java / JVM
+  legacy_entity: Java / JVM
+  legacy_category: 💻 计算机/编程
+  categories:
+  - 计算机/编程
+  keywords:
+  - java
+  - jvm
+  - maven
+  - gradle
+  - spring
+  - springboot
+  - mybatis
+  - hibernate
+  domains:
+  - springdoc.cn
+  - docs.oracle.com
+  - central.sonatype.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: springdoc-entry-1
+    method: homepage
+    url: https://springdoc.cn
+    discovery_only: true
+    evidence_eligible: false
+  - id: springdoc-entry-2
+    method: homepage
+    url: https://docs.oracle.com/en/java
+    discovery_only: true
+    evidence_eligible: false
+  - id: springdoc-entry-3
+    method: homepage
+    url: https://central.sonatype.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: cppreference
+  name: C / C++
+  legacy_entity: C / C++
+  legacy_category: 💻 计算机/编程
+  categories:
+  - 计算机/编程
+  keywords:
+  - c++
+  - cpp
+  - cmake
+  - qt
+  - boost
+  - stl
+  domains:
+  - en.cppreference.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: cppreference-entry-1
+    method: homepage
+    url: https://en.cppreference.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: microsoft
+  name: C# / .NET
+  legacy_entity: C# / .NET
+  legacy_category: 💻 计算机/编程
+  categories:
+  - 计算机/编程
+  keywords:
+  - c#
+  - dotnet
+  - .net
+  - asp.net
+  - blazor
+  - xamarin
+  domains:
+  - learn.microsoft.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: microsoft-entry-1
+    method: homepage
+    url: https://learn.microsoft.com/zh-cn/dotnet
+    discovery_only: true
+    evidence_eligible: false
+  - id: microsoft-entry-2
+    method: homepage
+    url: https://learn.microsoft.com/en-us/dotnet
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: laravel
+  name: PHP
+  legacy_entity: PHP
+  legacy_category: 💻 计算机/编程
+  categories:
+  - 计算机/编程
+  keywords:
+  - php
+  - laravel
+  - symfony
+  - wordpress
+  - composer
+  domains:
+  - laravel.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: laravel-entry-1
+    method: homepage
+    url: https://laravel.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: ruby-china
+  name: Ruby
+  legacy_entity: Ruby
+  legacy_category: 💻 计算机/编程
+  categories:
+  - 计算机/编程
+  keywords:
+  - ruby
+  - rails
+  - gem
+  - rspec
+  domains:
+  - ruby-china.org
+  - rubygems.org
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: ruby-china-entry-1
+    method: homepage
+    url: https://ruby-china.org
+    discovery_only: true
+    evidence_eligible: false
+  - id: ruby-china-entry-2
+    method: homepage
+    url: https://rubygems.org
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: kotlincn
+  name: Kotlin
+  legacy_entity: Kotlin
+  legacy_category: 💻 计算机/编程
+  categories:
+  - 计算机/编程
+  keywords:
+  - kotlin
+  - ktor
+  - coroutine
+  domains:
+  - book.kotlincn.net
+  - kotlinlang.org
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: kotlincn-entry-1
+    method: homepage
+    url: https://book.kotlincn.net
+    discovery_only: true
+    evidence_eligible: false
+  - id: kotlincn-entry-2
+    method: homepage
+    url: https://kotlinlang.org
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: gitbook
+  name: Swift / iOS
+  legacy_entity: Swift / iOS
+  legacy_category: 💻 计算机/编程
+  categories:
+  - 计算机/编程
+  keywords:
+  - swift
+  - ios
+  - xcode
+  - swiftui
+  - uikit
+  domains:
+  - swiftgg.gitbook.io
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: gitbook-entry-1
+    method: homepage
+    url: https://swiftgg.gitbook.io
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: nodejs-3
+  name: Tailwind CSS
+  legacy_entity: Tailwind CSS
+  legacy_category: 💻 计算机/编程
+  categories:
+  - 计算机/编程
+  keywords:
+  - tailwind
+  - tailwindcss
+  - utility css
+  domains:
+  - tailwind.nodejs.cn
+  - tailwindcss.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: nodejs-3-entry-1
+    method: homepage
+    url: https://tailwind.nodejs.cn
+    discovery_only: true
+    evidence_eligible: false
+  - id: nodejs-3-entry-2
+    method: homepage
+    url: https://tailwindcss.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: antgroup
+  name: Ant Design
+  legacy_entity: Ant Design
+  legacy_category: 💻 计算机/编程
+  categories:
+  - 计算机/编程
+  keywords:
+  - antd
+  - ant design
+  - antdesign
+  domains:
+  - ant-design.antgroup.com
+  - ant.design
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: antgroup-entry-1
+    method: homepage
+    url: https://ant-design.antgroup.com
+    discovery_only: true
+    evidence_eligible: false
+  - id: antgroup-entry-2
+    method: homepage
+    url: https://ant.design
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: apache
+  name: ECharts
+  legacy_entity: ECharts
+  legacy_category: 💻 计算机/编程
+  categories:
+  - 计算机/编程
+  keywords:
+  - echarts
+  - chart
+  - 图表
+  - 数据可视化
+  domains:
+  - echarts.apache.org
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: apache-entry-1
+    method: homepage
+    url: https://echarts.apache.org/zh
+    discovery_only: true
+    evidence_eligible: false
+  - id: apache-entry-2
+    method: homepage
+    url: https://echarts.apache.org
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: kubernetes
+  name: Kubernetes
+  legacy_entity: Kubernetes
+  legacy_category: 💻 计算机/编程
+  categories:
+  - 计算机/编程
+  keywords:
+  - kubernetes
+  - k8s
+  - helm
+  - istio
+  - pod
+  domains:
+  - kubernetes.io
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: kubernetes-entry-1
+    method: homepage
+    url: https://kubernetes.io/zh-cn
+    discovery_only: true
+    evidence_eligible: false
+  - id: kubernetes-entry-2
+    method: homepage
+    url: https://kubernetes.io
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: nginx
+  name: Nginx
+  legacy_entity: Nginx
+  legacy_category: 💻 计算机/编程
+  categories:
+  - 计算机/编程
+  keywords:
+  - nginx
+  - 反向代理
+  - reverse proxy
+  - load balance
+  domains:
+  - nginx.org
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: nginx-entry-1
+    method: homepage
+    url: https://nginx.org
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: git-scm
+  name: Git / GitHub
+  legacy_entity: Git / GitHub
+  legacy_category: 💻 计算机/编程
+  categories:
+  - 计算机/编程
+  keywords:
+  - git
+  - github
+  - gitlab
+  - gitee
+  - 版本控制
+  domains:
+  - git-scm.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: git-scm-entry-1
+    method: homepage
+    url: https://git-scm.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: debian
+  name: Linux
+  legacy_entity: Linux
+  legacy_category: 💻 计算机/编程
+  categories:
+  - 计算机/编程
+  keywords:
+  - linux
+  - ubuntu
+  - debian
+  - centos
+  - arch
+  - command
+  - bash
+  - shell
+  - systemd
+  domains:
+  - manpages.debian.org
+  - kernel.org
+  - wiki.archlinux.org
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: debian-entry-1
+    method: homepage
+    url: https://manpages.debian.org
+    discovery_only: true
+    evidence_eligible: false
+  - id: debian-entry-2
+    method: homepage
+    url: https://www.kernel.org
+    discovery_only: true
+    evidence_eligible: false
+  - id: debian-entry-3
+    method: homepage
+    url: https://wiki.archlinux.org
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: postgresql
+  name: PostgreSQL
+  legacy_entity: PostgreSQL
+  legacy_category: 💻 计算机/编程
+  categories:
+  - 计算机/编程
+  keywords:
+  - postgresql
+  - postgres
+  - pg
+  domains:
+  - postgresql.org
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: postgresql-entry-1
+    method: homepage
+    url: https://www.postgresql.org
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: mongodb
+  name: MongoDB
+  legacy_entity: MongoDB
+  legacy_category: 💻 计算机/编程
+  categories:
+  - 计算机/编程
+  keywords:
+  - mongodb
+  - mongo
+  - nosql
+  - mongoose
+  domains:
+  - mongodb.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: mongodb-entry-1
+    method: homepage
+    url: https://www.mongodb.com/docs
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: redis
+  name: Redis
+  legacy_entity: Redis
+  legacy_category: 💻 计算机/编程
+  categories:
+  - 计算机/编程
+  keywords:
+  - redis
+  - 缓存
+  - cache
+  - 消息队列
+  domains:
+  - redis.io
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: redis-entry-1
+    method: homepage
+    url: https://redis.io
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: pytorch
+  name: PyTorch
+  legacy_entity: PyTorch
+  legacy_category: 🤖 AI / 机器学习
+  categories:
+  - AI / 机器学习
+  keywords:
+  - pytorch
+  - torch
+  - tensor
+  - cuda
+  - gpu training
+  domains:
+  - pytorch.org
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: pytorch-entry-1
+    method: homepage
+    url: https://pytorch.org
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: hf-mirror
+  name: Hugging Face
+  legacy_entity: Hugging Face
+  legacy_category: 🤖 AI / 机器学习
+  categories:
+  - AI / 机器学习
+  keywords:
+  - huggingface
+  - transformers
+  - nlp
+  - llm
+  - model
+  - bert
+  - gpt
+  domains:
+  - hf-mirror.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: hf-mirror-entry-1
+    method: homepage
+    url: https://hf-mirror.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: openai
+  name: OpenAI
+  legacy_entity: OpenAI
+  legacy_category: 🤖 AI / 机器学习
+  categories:
+  - AI / 机器学习
+  keywords:
+  - openai
+  - chatgpt
+  - gpt-4
+  - gpt-4o
+  - dall-e
+  - whisper
+  - tts
+  domains:
+  - openai.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: openai-entry-1
+    method: homepage
+    url: https://openai.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: ollama
+  name: Ollama
+  legacy_entity: Ollama
+  legacy_category: 🤖 AI / 机器学习
+  categories:
+  - AI / 机器学习
+  keywords:
+  - ollama
+  - llama
+  - local llm
+  - 本地模型
+  - deepseek
+  domains:
+  - ollama.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: ollama-entry-1
+    method: homepage
+    url: https://ollama.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: cnki
+  name: 中国知网 (CNKI)
+  legacy_entity: 中国知网 (CNKI)
+  legacy_category: 🎓 学术/教育
+  categories:
+  - 学术/教育
+  keywords:
+  - 知网
+  - cnki
+  - 论文
+  - 期刊
+  - 硕博论文
+  - 学术
+  domains:
+  - cnki.net
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: cnki-entry-1
+    method: homepage
+    url: https://www.cnki.net
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: arxiv
+  name: arXiv
+  legacy_entity: arXiv
+  legacy_category: 🎓 学术/教育
+  categories:
+  - 学术/教育
+  keywords:
+  - arxiv
+  - 预印本
+  - preprint
+  - physics
+  - math
+  - cs
+  domains:
+  - arxiv.org
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  - academic_search
+  - structured_metadata
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: arxiv-entry-1
+    method: homepage
+    url: https://arxiv.org
+    discovery_only: true
+    evidence_eligible: false
+  - id: arxiv-query-api
+    method: structured_api
+    url: https://export.arxiv.org/api/query
+    discovery_only: false
+    evidence_eligible: true
+    adapter: arxiv_api
+  provenance: migrated from authoritative-sites.md
+- id: nih
+  name: PubMed
+  legacy_entity: PubMed
+  legacy_category: 🎓 学术/教育
+  categories:
+  - 学术/教育
+  keywords:
+  - pubmed
+  - 医学论文
+  - 生物医学
+  - clinical trial
+  domains:
+  - pubmed.ncbi.nlm.nih.gov
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  - academic_search
+  - structured_metadata
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: nih-entry-1
+    method: homepage
+    url: https://pubmed.ncbi.nlm.nih.gov
+    discovery_only: true
+    evidence_eligible: false
+  - id: pubmed-eutils-api
+    method: structured_api
+    url: https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi
+    discovery_only: false
+    evidence_eligible: true
+    adapter: pubmed_api
+  provenance: migrated from authoritative-sites.md
+- id: chsi
+  name: 考研
+  legacy_entity: 考研
+  legacy_category: 🎓 学术/教育
+  categories:
+  - 学术/教育
+  keywords:
+  - 考研
+  - 研究生
+  - 调剂
+  - 国家线
+  - 复试
+  domains:
+  - yz.chsi.com.cn
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: chsi-entry-1
+    method: homepage
+    url: https://yz.chsi.com.cn
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: ets
+  name: 留学
+  legacy_entity: 留学
+  legacy_category: 🎓 学术/教育
+  categories:
+  - 学术/教育
+  keywords:
+  - 留学
+  - 雅思
+  - 托福
+  - gre
+  - gmat
+  - 出国
+  - study abroad
+  domains:
+  - ets.org
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: ets-entry-1
+    method: homepage
+    url: https://www.ets.org/toefl
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: icourse163
+  name: 中国大学MOOC
+  legacy_entity: 中国大学MOOC
+  legacy_category: 🎓 学术/教育
+  categories:
+  - 学术/教育
+  keywords:
+  - mooc
+  - 网课
+  - 公开课
+  - 慕课
+  - coursera
+  domains:
+  - icourse163.org
+  - coursera.org
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: icourse163-entry-1
+    method: homepage
+    url: https://www.icourse163.org
+    discovery_only: true
+    evidence_eligible: false
+  - id: icourse163-entry-2
+    method: homepage
+    url: https://www.coursera.org
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: youdao
+  name: 英语学习
+  legacy_entity: 英语学习
+  legacy_category: 🎓 学术/教育
+  categories:
+  - 学术/教育
+  keywords:
+  - 英语
+  - 单词
+  - 语法
+  - 听力
+  - english
+  domains:
+  - dict.youdao.com
+  - dictionary.cambridge.org
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: youdao-entry-1
+    method: homepage
+    url: https://dict.youdao.com
+    discovery_only: true
+    evidence_eligible: false
+  - id: youdao-entry-2
+    method: homepage
+    url: https://dictionary.cambridge.org
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: eastmoney
+  name: 东方财富
+  legacy_entity: 东方财富
+  legacy_category: 💰 金融/投资
+  categories:
+  - 金融/投资
+  keywords:
+  - a股
+  - 股票
+  - 行情
+  - 财报
+  - 分红
+  - 北向资金
+  domains:
+  - eastmoney.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: eastmoney-entry-1
+    method: homepage
+    url: https://www.eastmoney.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: 10jqka
+  name: 同花顺
+  legacy_entity: 同花顺
+  legacy_category: 💰 金融/投资
+  categories:
+  - 金融/投资
+  keywords:
+  - 同花顺
+  - 炒股
+  - 技术分析
+  - k线
+  domains:
+  - 10jqka.com.cn
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: 10jqka-entry-1
+    method: homepage
+    url: https://www.10jqka.com.cn
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: pbc
+  name: 中国人民银行
+  legacy_entity: 中国人民银行
+  legacy_category: 💰 金融/投资
+  categories:
+  - 金融/投资
+  keywords:
+  - 央行
+  - 利率
+  - 存款准备金
+  - 货币政策
+  - lpr
+  domains:
+  - pbc.gov.cn
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: pbc-entry-1
+    method: homepage
+    url: https://www.pbc.gov.cn
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: csrc
+  name: 证监会
+  legacy_entity: 证监会
+  legacy_category: 💰 金融/投资
+  categories:
+  - 金融/投资
+  keywords:
+  - 证监会
+  - ipo
+  - 注册制
+  - 信息披露
+  domains:
+  - csrc.gov.cn
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: csrc-entry-1
+    method: homepage
+    url: https://www.csrc.gov.cn
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: sse
+  name: 上海证券交易所
+  legacy_entity: 上海证券交易所
+  legacy_category: 💰 金融/投资
+  categories:
+  - 金融/投资
+  keywords:
+  - 上交所
+  - 科创板
+  - 股票上市
+  domains:
+  - sse.com.cn
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: sse-entry-1
+    method: homepage
+    url: https://www.sse.com.cn
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: szse
+  name: 深圳证券交易所
+  legacy_entity: 深圳证券交易所
+  legacy_category: 💰 金融/投资
+  categories:
+  - 金融/投资
+  keywords:
+  - 深交所
+  - 创业板
+  domains:
+  - szse.cn
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: szse-entry-1
+    method: homepage
+    url: https://www.szse.cn
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: chinaamc
+  name: 基金
+  legacy_entity: 基金
+  legacy_category: 💰 金融/投资
+  categories:
+  - 金融/投资
+  keywords:
+  - 基金
+  - etf
+  - lof
+  - 定投
+  - 基金经理
+  domains:
+  - chinaamc.com
+  - fund.eastmoney.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: chinaamc-entry-1
+    method: homepage
+    url: https://www.chinaamc.com
+    discovery_only: true
+    evidence_eligible: false
+  - id: chinaamc-entry-2
+    method: homepage
+    url: https://fund.eastmoney.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: iachina
+  name: 保险
+  legacy_entity: 保险
+  legacy_category: 💰 金融/投资
+  categories:
+  - 金融/投资
+  keywords:
+  - 保险
+  - 重疾险
+  - 医疗险
+  - 车险
+  - 寿险
+  domains:
+  - iachina.cn
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: iachina-entry-1
+    method: homepage
+    url: https://www.iachina.cn
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: jisilu
+  name: 集思录
+  legacy_entity: 集思录
+  legacy_category: 💰 金融/投资
+  categories:
+  - 金融/投资
+  keywords:
+  - 可转债
+  - 分级基金
+  - 套利
+  - 低风险投资
+  domains:
+  - jisilu.cn
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: jisilu-entry-1
+    method: homepage
+    url: https://www.jisilu.cn
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: pkulaw
+  name: 北大法宝
+  legacy_entity: 北大法宝
+  legacy_category: ⚖️ 法律/政策
+  categories:
+  - 法律/政策
+  keywords:
+  - 法律
+  - 法规
+  - 判决
+  - 案例
+  - 司法解释
+  - 合同
+  domains:
+  - pkulaw.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: pkulaw-entry-1
+    method: homepage
+    url: https://www.pkulaw.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: msdmanuals
+  name: 默沙东诊疗手册
+  legacy_entity: 默沙东诊疗手册
+  legacy_category: 🏥 医疗/健康
+  categories:
+  - 医疗/健康
+  keywords:
+  - 疾病
+  - 症状
+  - 诊断
+  - 治疗
+  - 用药
+  domains:
+  - msdmanuals.cn
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: msdmanuals-entry-1
+    method: homepage
+    url: https://www.msdmanuals.cn
+    discovery_only: true
+    evidence_eligible: false
+  - id: msdmanuals-entry-2
+    method: homepage
+    url: https://www.msdmanuals.cn/home
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: dxy
+  name: 丁香园
+  legacy_entity: 丁香园
+  legacy_category: 🏥 医疗/健康
+  categories:
+  - 医疗/健康
+  keywords:
+  - 丁香园
+  - 医生
+  - 临床
+  - 指南
+  - 医学
+  domains:
+  - dxy.cn
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: dxy-entry-1
+    method: homepage
+    url: https://www.dxy.cn
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: dxy-2
+  name: 丁香医生
+  legacy_entity: 丁香医生
+  legacy_category: 🏥 医疗/健康
+  categories:
+  - 医疗/健康
+  keywords:
+  - 丁香医生
+  - 健康科普
+  - 症状自查
+  - 就医
+  domains:
+  - dxy.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: dxy-2-entry-1
+    method: homepage
+    url: https://dxy.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: int
+  name: WHO (世界卫生组织)
+  legacy_entity: WHO (世界卫生组织)
+  legacy_category: 🏥 医疗/健康
+  categories:
+  - 医疗/健康
+  keywords:
+  - who
+  - 世卫
+  - 疫情
+  - 传染病
+  - 疫苗
+  domains:
+  - who.int
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: int-entry-1
+    method: homepage
+    url: https://www.who.int/zh
+    discovery_only: true
+    evidence_eligible: false
+  - id: int-entry-2
+    method: homepage
+    url: https://www.who.int
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: chinacdc
+  name: 中国疾控中心
+  legacy_entity: 中国疾控中心
+  legacy_category: 🏥 医疗/健康
+  categories:
+  - 医疗/健康
+  keywords:
+  - cdc
+  - 疾控
+  - 传染病
+  - 疫苗接种
+  domains:
+  - chinacdc.cn
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: chinacdc-entry-1
+    method: homepage
+    url: https://www.chinacdc.cn
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: ctrip
+  name: 携程旅行
+  legacy_entity: 携程旅行
+  legacy_category: ✈️ 旅游/出行
+  categories:
+  - 旅游/出行
+  keywords:
+  - 携程
+  - 酒店
+  - 机票
+  - 火车票
+  - 景点门票
+  domains:
+  - ctrip.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: ctrip-entry-1
+    method: homepage
+    url: https://www.ctrip.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: '12306'
+  name: '12306'
+  legacy_entity: '12306'
+  legacy_category: ✈️ 旅游/出行
+  categories:
+  - 旅游/出行
+  keywords:
+  - '12306'
+  - 高铁
+  - 火车票
+  - 动车
+  domains:
+  - 12306.cn
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: 12306-entry-1
+    method: homepage
+    url: https://www.12306.cn
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: csair
+  name: 各航司官网
+  legacy_entity: 各航司官网
+  legacy_category: ✈️ 旅游/出行
+  categories:
+  - 旅游/出行
+  keywords:
+  - 航班
+  - 飞机
+  - 登机
+  - 行李
+  - 航空公司
+  domains:
+  - csair.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: csair-entry-1
+    method: homepage
+    url: https://www.csair.com/cn
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: xiachufang
+  name: 下厨房
+  legacy_entity: 下厨房
+  legacy_category: 🍔 美食/餐饮
+  categories:
+  - 美食/餐饮
+  keywords:
+  - 菜谱
+  - 做饭
+  - 烘焙
+  - 家常菜
+  - 食谱
+  domains:
+  - xiachufang.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: xiachufang-entry-1
+    method: homepage
+    url: https://www.xiachufang.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: cfsa
+  name: 食品安全
+  legacy_entity: 食品安全
+  legacy_category: 🍔 美食/餐饮
+  categories:
+  - 美食/餐饮
+  keywords:
+  - 食品安全
+  - 添加剂
+  - 保质期
+  - 农药残留
+  - 转基因
+  domains:
+  - cfsa.net.cn
+  - samr.gov.cn
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: cfsa-entry-1
+    method: homepage
+    url: https://www.cfsa.net.cn
+    discovery_only: true
+    evidence_eligible: false
+  - id: cfsa-entry-2
+    method: homepage
+    url: https://www.samr.gov.cn
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: autohome
+  name: 汽车之家
+  legacy_entity: 汽车之家
+  legacy_category: 🚗 汽车/交通
+  categories:
+  - 汽车/交通
+  keywords:
+  - 汽车
+  - 车型
+  - 报价
+  - 评测
+  - suv
+  - 轿车
+  domains:
+  - autohome.com.cn
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: autohome-entry-1
+    method: homepage
+    url: https://www.autohome.com.cn
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: yiche
+  name: 易车
+  legacy_entity: 易车
+  legacy_category: 🚗 汽车/交通
+  categories:
+  - 汽车/交通
+  keywords:
+  - 易车
+  - 购车
+  - 比价
+  - 经销商
+  domains:
+  - yiche.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: yiche-entry-1
+    method: homepage
+    url: https://www.yiche.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: autohome-2
+  name: 新能源汽车
+  legacy_entity: 新能源汽车
+  legacy_category: 🚗 汽车/交通
+  categories:
+  - 汽车/交通
+  keywords:
+  - 新能源
+  - 电动车
+  - 充电桩
+  - 比亚迪
+  - 特斯拉
+  - 蔚来
+  domains:
+  - autohome.com.cn
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: autohome-2-entry-1
+    method: homepage
+    url: https://www.autohome.com.cn
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: iihs
+  name: 汽车评测（海外）
+  legacy_entity: 汽车评测（海外）
+  legacy_category: 🚗 汽车/交通
+  categories:
+  - 汽车/交通
+  keywords:
+  - car review
+  - 汽车评测
+  - 碰撞测试
+  - iihs
+  - ncap
+  domains:
+  - iihs.org
+  - euroncap.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: iihs-entry-1
+    method: homepage
+    url: https://www.iihs.org
+    discovery_only: true
+    evidence_eligible: false
+  - id: iihs-entry-2
+    method: homepage
+    url: https://www.euroncap.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: mohurd
+  name: 住房和城乡建设部
+  legacy_entity: 住房和城乡建设部
+  legacy_category: 🏠 房产/家居
+  categories:
+  - 房产/家居
+  keywords:
+  - 住建部
+  - 房地产政策
+  - 限购
+  - 公积金
+  domains:
+  - mohurd.gov.cn
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: mohurd-entry-1
+    method: homepage
+    url: https://www.mohurd.gov.cn
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: hupu
+  name: 虎扑
+  legacy_entity: 虎扑
+  legacy_category: ⚽ 体育/健身
+  categories:
+  - 体育/健身
+  keywords:
+  - 篮球
+  - nba
+  - cba
+  - 足球
+  - 中超
+  - 英超
+  - 西甲
+  domains:
+  - hupu.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: hupu-entry-1
+    method: homepage
+    url: https://www.hupu.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: qq
+  name: 腾讯体育
+  legacy_entity: 腾讯体育
+  legacy_category: ⚽ 体育/健身
+  categories:
+  - 体育/健身
+  keywords:
+  - 腾讯体育
+  - 直播
+  - 赛事
+  - 比分
+  domains:
+  - sports.qq.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: qq-entry-1
+    method: homepage
+    url: https://sports.qq.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: dongqiudi
+  name: 懂球帝
+  legacy_entity: 懂球帝
+  legacy_category: ⚽ 体育/健身
+  categories:
+  - 体育/健身
+  keywords:
+  - 足球
+  - 欧冠
+  - 世界杯
+  - 五大联赛
+  domains:
+  - dongqiudi.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: dongqiudi-entry-1
+    method: homepage
+    url: https://www.dongqiudi.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: sport
+  name: 国家体育总局
+  legacy_entity: 国家体育总局
+  legacy_category: ⚽ 体育/健身
+  categories:
+  - 体育/健身
+  keywords:
+  - 体育总局
+  - 竞技体育
+  - 全民健身
+  domains:
+  - sport.gov.cn
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: sport-entry-1
+    method: homepage
+    url: https://www.sport.gov.cn
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: keep
+  name: Keep
+  legacy_entity: Keep
+  legacy_category: ⚽ 体育/健身
+  categories:
+  - 体育/健身
+  keywords:
+  - keep
+  - 健身
+  - 减脂
+  - 增肌
+  - hiit
+  - 跑步
+  domains:
+  - keep.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: keep-entry-1
+    method: homepage
+    url: https://www.keep.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: douban
+  name: 豆瓣电影
+  legacy_entity: 豆瓣电影
+  legacy_category: 🎬 娱乐/影视
+  categories:
+  - 娱乐/影视
+  keywords:
+  - 电影
+  - 影评
+  - 评分
+  - 电视剧
+  - 综艺
+  domains:
+  - movie.douban.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: douban-entry-1
+    method: homepage
+    url: https://movie.douban.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: rottentomatoes
+  name: 烂番茄 (Rotten Tomatoes)
+  legacy_entity: 烂番茄 (Rotten Tomatoes)
+  legacy_category: 🎬 娱乐/影视
+  categories:
+  - 娱乐/影视
+  keywords:
+  - rotten tomatoes
+  - 烂番茄
+  - tomatometer
+  domains:
+  - rottentomatoes.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: rottentomatoes-entry-1
+    method: homepage
+    url: https://www.rottentomatoes.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: bilibili
+  name: B站
+  legacy_entity: B站
+  legacy_category: 🎬 娱乐/影视
+  categories:
+  - 娱乐/影视
+  keywords:
+  - bilibili
+  - b站
+  - 番剧
+  - up主
+  - 弹幕
+  domains:
+  - bilibili.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: bilibili-entry-1
+    method: homepage
+    url: https://www.bilibili.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: qq-2
+  name: QQ音乐
+  legacy_entity: QQ音乐
+  legacy_category: 🎬 娱乐/影视
+  categories:
+  - 娱乐/影视
+  keywords:
+  - qq音乐
+  - 歌曲
+  - 演唱会
+  domains:
+  - y.qq.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: qq-2-entry-1
+    method: homepage
+    url: https://y.qq.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: douban-2
+  name: 综艺/电视剧
+  legacy_entity: 综艺/电视剧
+  legacy_category: 🎬 娱乐/影视
+  categories:
+  - 娱乐/影视
+  keywords:
+  - 综艺
+  - 网剧
+  - 电视剧
+  - 追剧
+  domains:
+  - movie.douban.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: douban-2-entry-1
+    method: homepage
+    url: https://movie.douban.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: ifanr
+  name: 数字尾巴 / 爱范儿（数码评测）
+  legacy_entity: 数字尾巴 / 爱范儿（数码评测）
+  legacy_category: 🛒 购物/消费
+  categories:
+  - 购物/消费
+  keywords:
+  - 数码
+  - 评测
+  - 手机
+  - 电脑
+  - 耳机
+  domains:
+  - ifanr.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: ifanr-entry-1
+    method: homepage
+    url: https://www.ifanr.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: moe
+  name: 中国教育部
+  legacy_entity: 中国教育部
+  legacy_category: 👶 教育/亲子
+  categories:
+  - 教育/亲子
+  keywords:
+  - 教育部
+  - 高考
+  - 中考
+  - 双减
+  - 学区
+  domains:
+  - moe.gov.cn
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: moe-entry-1
+    method: homepage
+    url: https://www.moe.gov.cn
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: babytree
+  name: 宝宝树
+  legacy_entity: 宝宝树
+  legacy_category: 👶 教育/亲子
+  categories:
+  - 教育/亲子
+  keywords:
+  - 怀孕
+  - 育儿
+  - 月子
+  - 辅食
+  - 早产
+  domains:
+  - babytree.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: babytree-entry-1
+    method: homepage
+    url: https://www.babytree.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: qinbaobao
+  name: 亲宝宝
+  legacy_entity: 亲宝宝
+  legacy_category: 👶 教育/亲子
+  categories:
+  - 教育/亲子
+  keywords:
+  - 新生儿
+  - 黄疸
+  - 疫苗
+  - 发育
+  - 儿保
+  domains:
+  - qinbaobao.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: qinbaobao-entry-1
+    method: homepage
+    url: https://www.qinbaobao.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: xdf
+  name: 学而思 / 新东方
+  legacy_entity: 学而思 / 新东方
+  legacy_category: 👶 教育/亲子
+  categories:
+  - 教育/亲子
+  keywords:
+  - 学而思
+  - 新东方
+  - 补习
+  - 奥数
+  - 英语培训
+  domains:
+  - xdf.cn
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: xdf-entry-1
+    method: homepage
+    url: https://www.xdf.cn
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: stats
+  name: 国家统计局
+  legacy_entity: 国家统计局
+  legacy_category: 📚 百科/知识
+  categories:
+  - 百科/知识
+  keywords:
+  - gdp
+  - cpi
+  - 人口
+  - 统计
+  - 数据
+  domains:
+  - stats.gov.cn
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: stats-entry-1
+    method: homepage
+    url: https://www.stats.gov.cn
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: worldbank
+  name: 世界银行数据
+  legacy_entity: 世界银行数据
+  legacy_category: 📚 百科/知识
+  categories:
+  - 百科/知识
+  keywords:
+  - world bank
+  - gdp per capita
+  - 各国数据
+  domains:
+  - data.worldbank.org
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: worldbank-entry-1
+    method: homepage
+    url: https://data.worldbank.org
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: people
+  name: 新华社/人民网
+  legacy_entity: 新华社/人民网
+  legacy_category: 🌐 新闻/资讯
+  categories:
+  - 新闻/资讯
+  keywords:
+  - 新华社
+  - 新闻
+  - 人民日报
+  - 官方媒体
+  domains:
+  - people.com.cn
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: people-entry-1
+    method: homepage
+    url: https://www.people.com.cn
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: caixin
+  name: 财新网
+  legacy_entity: 财新网
+  legacy_category: 🌐 新闻/资讯
+  categories:
+  - 新闻/资讯
+  keywords:
+  - 财新
+  - 经济新闻
+  - 深度报道
+  domains:
+  - caixin.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: caixin-entry-1
+    method: homepage
+    url: https://www.caixin.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: microsoft-2
+  name: WPS / Office
+  legacy_entity: WPS / Office
+  legacy_category: 💼 办公/效率工具
+  categories:
+  - 办公/效率工具
+  keywords:
+  - wps
+  - word
+  - excel
+  - ppt
+  - 办公
+  - 文档
+  - 表格
+  domains:
+  - support.microsoft.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: microsoft-2-entry-1
+    method: homepage
+    url: https://support.microsoft.com/zh-cn
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: dingtalk
+  name: 钉钉 (DingTalk)
+  legacy_entity: 钉钉 (DingTalk)
+  legacy_category: 💼 办公/效率工具
+  categories:
+  - 办公/效率工具
+  keywords:
+  - 钉钉
+  - 考勤
+  - 打卡
+  - 视频会议
+  - 审批流
+  domains:
+  - dingtalk.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: dingtalk-entry-1
+    method: homepage
+    url: https://www.dingtalk.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: qq-3
+  name: 企业微信
+  legacy_entity: 企业微信
+  legacy_category: 💼 办公/效率工具
+  categories:
+  - 办公/效率工具
+  keywords:
+  - 企业微信
+  - 客户群
+  - 离职继承
+  - 私域
+  domains:
+  - work.weixin.qq.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: qq-3-entry-1
+    method: homepage
+    url: https://work.weixin.qq.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: teambition
+  name: 项目管理
+  legacy_entity: 项目管理
+  legacy_category: 💼 办公/效率工具
+  categories:
+  - 办公/效率工具
+  keywords:
+  - 项目管理
+  - 甘特图
+  - 看板
+  - 敏捷
+  - scrum
+  domains:
+  - teambition.com
+  - tapd.cn
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: teambition-entry-1
+    method: homepage
+    url: https://www.teambition.com
+    discovery_only: true
+    evidence_eligible: false
+  - id: teambition-entry-2
+    method: homepage
+    url: https://www.tapd.cn
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: tencent
+  name: 会议/视频会议
+  legacy_entity: 会议/视频会议
+  legacy_category: 💼 办公/效率工具
+  categories:
+  - 办公/效率工具
+  keywords:
+  - zoom
+  - teams
+  - 腾讯会议
+  - 视频会议
+  domains:
+  - meeting.tencent.com
+  - zoom.us
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: tencent-entry-1
+    method: homepage
+    url: https://meeting.tencent.com
+    discovery_only: true
+    evidence_eligible: false
+  - id: tencent-entry-2
+    method: homepage
+    url: https://zoom.us
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: calendly
+  name: 日历/日程
+  legacy_entity: 日历/日程
+  legacy_category: 💼 办公/效率工具
+  categories:
+  - 办公/效率工具
+  keywords:
+  - 日历
+  - 日程
+  - 时间管理
+  - gtd
+  domains:
+  - calendly.com
+  - ticktick.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: calendly-entry-1
+    method: homepage
+    url: https://calendly.com
+    discovery_only: true
+    evidence_eligible: false
+  - id: calendly-entry-2
+    method: homepage
+    url: https://ticktick.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: liepin
+  name: 简历/求职
+  legacy_entity: 简历/求职
+  legacy_category: 💼 办公/效率工具
+  categories:
+  - 办公/效率工具
+  keywords:
+  - 简历
+  - 求职
+  - 面试
+  - 招聘
+  - 薪资
+  domains:
+  - liepin.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: liepin-entry-1
+    method: homepage
+    url: https://www.liepin.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: iresearch
+  name: 艾瑞咨询
+  legacy_entity: 艾瑞咨询
+  legacy_category: 📊 市场调研/行业报告
+  categories:
+  - 市场调研/行业报告
+  keywords:
+  - 艾瑞
+  - 行业报告
+  - 用户研究
+  - 市场规模
+  domains:
+  - iresearch.cn
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: iresearch-entry-1
+    method: homepage
+    url: https://www.iresearch.cn
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: analysys
+  name: 易观分析
+  legacy_entity: 易观分析
+  legacy_category: 📊 市场调研/行业报告
+  categories:
+  - 市场调研/行业报告
+  keywords:
+  - 易观
+  - 数字用户
+  - 行业分析
+  domains:
+  - analysys.cn
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: analysys-entry-1
+    method: homepage
+    url: https://www.analysys.cn
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: questmobile
+  name: QuestMobile
+  legacy_entity: QuestMobile
+  legacy_category: 📊 市场调研/行业报告
+  categories:
+  - 市场调研/行业报告
+  keywords:
+  - questmobile
+  - app数据
+  - 用户画像
+  - 流量
+  domains:
+  - questmobile.com.cn
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: questmobile-entry-1
+    method: homepage
+    url: https://www.questmobile.com.cn
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: 199it
+  name: 199IT
+  legacy_entity: 199IT
+  legacy_category: 📊 市场调研/行业报告
+  categories:
+  - 市场调研/行业报告
+  keywords:
+  - 199it
+  - 数据报告
+  - 互联网数据
+  domains:
+  - 199it.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: 199it-entry-1
+    method: homepage
+    url: https://www.199it.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: talkingdata
+  name: TalkingData
+  legacy_entity: TalkingData
+  legacy_category: 📊 市场调研/行业报告
+  categories:
+  - 市场调研/行业报告
+  keywords:
+  - talkingdata
+  - 移动数据
+  - 用户行为
+  domains:
+  - talkingdata.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: talkingdata-entry-1
+    method: homepage
+    url: https://www.talkingdata.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: cninfo
+  name: 巨潮资讯
+  legacy_entity: 巨潮资讯
+  legacy_category: 📊 市场调研/行业报告
+  categories:
+  - 市场调研/行业报告
+  keywords:
+  - 年报
+  - 招股书
+  - 上市公司公告
+  domains:
+  - cninfo.com.cn
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: cninfo-entry-1
+    method: homepage
+    url: https://www.cninfo.com.cn
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: worldbank-2
+  name: 数据查询/公共数据
+  legacy_entity: 数据查询/公共数据
+  legacy_category: 📈 数据分析
+  categories:
+  - 数据分析
+  keywords:
+  - 开放数据
+  - 公共数据
+  - 数据集
+  domains:
+  - data.worldbank.org
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: worldbank-2-entry-1
+    method: homepage
+    url: https://data.worldbank.org
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: newrank
+  name: 新榜
+  legacy_entity: 新榜
+  legacy_category: 📱 自媒体运营/内容创作
+  categories:
+  - 自媒体运营/内容创作
+  keywords:
+  - 新榜
+  - 自媒体排行
+  - 内容数据
+  - 达人
+  domains:
+  - newrank.cn
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: newrank-entry-1
+    method: homepage
+    url: https://www.newrank.cn
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: canva
+  name: Canva
+  legacy_entity: Canva
+  legacy_category: 📱 自媒体运营/内容创作
+  categories:
+  - 自媒体运营/内容创作
+  keywords:
+  - canva
+  - 设计
+  - 封面
+  - 海报
+  - 模版
+  - 作图
+  domains:
+  - canva.cn
+  - canva.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: canva-entry-1
+    method: homepage
+    url: https://www.canva.cn
+    discovery_only: true
+    evidence_eligible: false
+  - id: canva-entry-2
+    method: homepage
+    url: https://www.canva.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: pixabay
+  name: 版权/素材
+  legacy_entity: 版权/素材
+  legacy_category: 📱 自媒体运营/内容创作
+  categories:
+  - 自媒体运营/内容创作
+  keywords:
+  - 无版权
+  - 图片
+  - 字体
+  - 音乐
+  - 视频素材
+  domains:
+  - pixabay.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: pixabay-entry-1
+    method: homepage
+    url: https://pixabay.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: baidu
+  name: 百度热搜
+  legacy_entity: 百度热搜
+  legacy_category: 🔥 热点/热搜
+  categories:
+  - 热点/热搜
+  keywords:
+  - 百度热搜
+  - 实时热点
+  - 搜索风云榜
+  domains:
+  - top.baidu.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: baidu-entry-1
+    method: homepage
+    url: https://top.baidu.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: qq-4
+  name: 微信指数
+  legacy_entity: 微信指数
+  legacy_category: 🔥 热点/热搜
+  categories:
+  - 热点/热搜
+  keywords:
+  - 微信指数
+  - 热度趋势
+  - 朋友圈热度
+  domains:
+  - weixin.qq.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: qq-4-entry-1
+    method: homepage
+    url: https://weixin.qq.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: nowre
+  name: NOWRE
+  legacy_entity: NOWRE
+  legacy_category: 🎨 潮流/时尚
+  categories:
+  - 潮流/时尚
+  keywords:
+  - nowre
+  - 潮流
+  - 街头
+  - 滑板
+  domains:
+  - nowre.com
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: nowre-entry-1
+    method: homepage
+    url: https://www.nowre.com
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md
+- id: coolors
+  name: 色采/配色
+  legacy_entity: 色采/配色
+  legacy_category: 🎨 潮流/时尚
+  categories:
+  - 潮流/时尚
+  keywords:
+  - 配色
+  - 色板
+  - 颜色搭配
+  - 潘通
+  domains:
+  - coolors.co
+  source_role: curated_reference
+  authority: 3
+  reliability: unknown
+  languages:
+  - zh-CN
+  capabilities:
+  - authority_discovery
+  enabled: true
+  fallback_source_ids: []
+  rate_policy:
+    serial_only: false
+    minimum_interval_seconds: 0
+    max_concurrency: 1
+    timeout_seconds: 15
+  endpoints:
+  - id: coolors-entry-1
+    method: homepage
+    url: https://coolors.co
+    discovery_only: true
+    evidence_eligible: false
+  provenance: migrated from authoritative-sites.md

@@ -179,3 +179,9 @@ openclaw mcp probe cn-web-search --json
 - `research_status`
 - `research_result`
 - `research_cancel`
+
+还应能够读取以下诊断资源：
+
+- `cnws://sources/catalog`：`validation_completed` 应为 `true`；
+- `cnws://sources/coverage`：检查端点是 `executable` 还是仅 `not_implemented`；
+- `cnws://sources/route/{query}`：检查定向来源规划，四源策略仍应标记为独立必需流程。

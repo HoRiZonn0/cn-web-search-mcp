@@ -33,6 +33,15 @@ class McpProtocolTests(unittest.IsolatedAsyncioTestCase):
                     payload = json.loads(resource.contents[0].text)
                     self.assertIn("web_search_backend", payload)
                     self.assertIn("max_job_workers", payload)
+                    catalog_resource = await session.read_resource("cnws://sources/catalog")
+                    catalog = json.loads(catalog_resource.contents[0].text)
+                    self.assertTrue(catalog["validation_completed"])
+                    self.assertEqual(catalog["declared_sources"], 108)
+                    coverage_resource = await session.read_resource("cnws://sources/coverage")
+                    coverage = json.loads(coverage_resource.contents[0].text)
+                    self.assertEqual(coverage["executable_endpoint_count"], 7)
+                    self.assertGreater(coverage["discovery_endpoint_count"], 90)
+                    self.assertIn("pubmed-eutils-api", coverage["sources"]["nih"]["executable"])
 
 
 if __name__ == "__main__":

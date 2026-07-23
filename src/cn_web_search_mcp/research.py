@@ -19,8 +19,9 @@ from .core.planners import plan_retry_queries
 from .core.processing import deduplicate_results
 from .core.service import evaluate, plan
 from .network import HttpClient
-from .search_adapters import build_search_adapters
+from .core.sources import SourceRegistry, build_source_adapter_registry
 from .store import JobStore
+from .structured_adapters import run_structured_sources
 
 
 class ResearchCancelled(RuntimeError):
@@ -148,10 +149,19 @@ def _validate_requirement_matches(results: list[SearchResult], task: dict[str, A
 
 
 class ResearchRunner:
-    def __init__(self, settings: Settings, store: JobStore, *, adapters=None, fetcher=None):
+    def __init__(
+        self,
+        settings: Settings,
+        store: JobStore,
+        *,
+        adapters=None,
+        source_adapters=None,
+        fetcher=None,
+    ):
         self.settings = settings
         self.store = store
         self._adapters = adapters
+        self._source_adapters = source_adapters
         self._fetcher = fetcher
 
     def run(
@@ -218,7 +228,16 @@ class ResearchRunner:
             max_fetches_per_round=min(fetch_limit, max(self.settings.max_fetches_per_round, 1)),
         )
         client = HttpClient(runtime_settings)
-        adapters = self._adapters or build_search_adapters(runtime_settings, client)
+        source_adapters = self._source_adapters
+        if source_adapters is None and self._adapters is None:
+            source_adapters = build_source_adapter_registry(
+                runtime_settings,
+                client,
+                SourceRegistry.load_default(),
+            )
+        adapters = self._adapters or source_adapters.for_sources(
+            ("search-360", "search-sogou", "search-bing-rss", "search-web")
+        )
         limits = ExecutionLimits(
             max_query_concurrency=3,
             max_stage_concurrency=8,
@@ -233,20 +252,35 @@ class ResearchRunner:
         fetcher = self._fetcher or ContentFetcher(runtime_settings, client, self.store)
 
         queries = [_query_from_dict(item) for item in research_plan["queries"]]
+        selected_vertical_sources = {
+            item["source_id"] for item in research_plan["source_routing"]["routes"]
+        }
+        routed_adapters = (
+            source_adapters.for_sources(selected_vertical_sources)
+            if source_adapters is not None
+            else []
+        )
         all_stages = []
+        routed_stages = []
         all_results: list[SearchResult] = []
         final_pack = None
 
         for round_number in range(1, max_rounds + 1):
             check_cancelled()
-            total_stages = len(queries) * 4
+            total_stages = len(queries) * (4 + len(routed_adapters))
             progress("searching", round_number, 0, total_stages)
             execution = await orchestrator.run_round_async(queries, round_number)
             all_stages.extend(execution.stages)
+            routed_execution = await run_structured_sources(
+                routed_adapters,
+                queries,
+                timeout_seconds=runtime_settings.request_timeout_seconds + 1,
+            )
+            routed_stages.extend(routed_execution.stages)
             progress("searching", round_number, total_stages, total_stages)
             check_cancelled()
 
-            candidates = list(execution.results)
+            candidates = [*execution.results, *routed_execution.results]
             if round_number == 1 and queries:
                 candidates = _authority_seeds(research_plan, queries[0]) + candidates
             candidates = _prioritize_candidates(candidates, runtime_settings.max_fetches_per_round)
@@ -314,6 +348,19 @@ class ResearchRunner:
                 "raw_results": len(all_results),
                 "authority_entries_scanned": research_plan["authority_scan"]["scanned_entries"],
                 "authority_scan_completed": research_plan["authority_scan"]["completed"],
+                "catalog_sources_loaded": research_plan["source_catalog"]["loaded_sources"],
+                "routed_source_attempts": len(routed_stages),
+                "routed_sources": sorted({item.engine for item in routed_stages}),
+                "structured_source_attempts": len(
+                    [item for item in routed_stages if item.engine.endswith("_api")]
+                ),
+                "structured_sources": sorted(
+                    {
+                        item.engine
+                        for item in routed_stages
+                        if item.engine.endswith("_api")
+                    }
+                ),
                 "elapsed_ms": round((perf_counter() - started) * 1000),
             },
         }

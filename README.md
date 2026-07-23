@@ -2,7 +2,7 @@
 
 面向中文互联网研究的自主搜索 MCP 服务。它把原先依赖模型逐步执行的搜索流程收进服务端：完整扫描权威来源规则、并发执行四个逻辑搜索来源、抓取正文、筛选最小证据片段、评估搜索质量，并按信息缺口自动补搜。
 
-当前版本：`0.1.0`。项目仍处于早期阶段，建议先在本机或可信网络中部署和评测。
+当前开发版本：`0.2.0`。项目仍处于早期阶段，建议先在本机或可信网络中部署和评测。
 
 ## 主要能力
 
@@ -14,6 +14,8 @@
 - **异步任务接口**：研究任务在后台运行，支持状态查询、结果获取和取消。
 - **较小模型上下文**：完整规则库和网页正文保留在服务端，只向宿主模型返回必要事实、证据片段和 URL。
 - **本地持久化**：任务、缓存、证据和域名健康信息写入 SQLite 与本地产物目录。
+- **结构化来源目录**：一次性加载并校验 YAML，区分已登记来源、可执行端点和仅用于发现的入口。
+- **意图定向来源**：四源搜索之外，路由选中的目录来源会通过独立的域名定向 Adapter 搜索；学术查询还可直接调用 Crossref、arXiv 与 PubMed API。
 
 ## 工作方式
 
@@ -24,6 +26,9 @@ MCP 客户端 / Agent
     -> 完整扫描权威来源规则
     -> 查询规划与缺口分析
     -> 360 / 搜狗 / Bing RSS / web_search
+    -> 按意图选择的目录来源 Adapter
+       -> 来源域名定向发现
+       -> Crossref / arXiv / PubMed 结构化 API
     -> 候选去重与正文抓取
        -> HTTP
        -> 可选 Firecrawl 后备
@@ -34,6 +39,8 @@ MCP 客户端 / Agent
 ```
 
 这里的“四源”表示四个必须尝试的逻辑搜索来源，不等于四个独立发布者。互证强度按正文发布者和原始信息来源判断，不能只按搜索渠道数量判断。
+
+来源目录当前包含108个来源定义：103条由旧权威网址知识库无损迁移的条目、4个必需搜索渠道和1个新增 Crossref 来源。运行覆盖报告当前列出7个直接可执行端点，并单独列出目录来源的 `discovery_only` 入口。发现入口会生成 `site:domain` 定向查询并过滤非目标域名结果，但不能冒充来源自身 API 或直接事实证据。
 
 ## 快速开始
 
@@ -92,6 +99,14 @@ openclaw mcp doctor cn-web-search --probe
 | `research_result` | 获取事实、证据、来源 URL、冲突和未解决项 |
 | `research_cancel` | 请求取消尚未结束的任务 |
 
+诊断资源：
+
+| URI | 用途 |
+|---|---|
+| `cnws://sources/catalog` | 查看目录版本、加载数量、完整性和哈希 |
+| `cnws://sources/coverage` | 区分 declared、executable 和 not_implemented 端点 |
+| `cnws://sources/route/{query}` | 预览意图定向来源；不改变四源完整策略 |
+
 推荐调用流程：
 
 1. 使用用户原始问题调用 `research_start`。
@@ -116,6 +131,16 @@ queued -> running -> completed
 2. 搜狗 HTML；
 3. Bing RSS；
 4. `web_search`。
+
+四源用于开放网页发现。YAML 目录中的来源属于附加通道，只在匹配意图时执行，不会替代或跳过其中任何一源。每个被选来源都有独立 Adapter 实例：普通目录来源通过共享 Web Search 后端生成域名限定查询，并再次按域名过滤结果；存在公开结构化接口的来源优先增加直接 API Adapter。
+
+当前学术类问题可直接路由到：
+
+- Crossref Works API；
+- arXiv Query API；
+- PubMed E-utilities（ESearch + ESummary）。
+
+`cnws://sources/coverage` 将能力分为：`executable`（直接运行端点）、`discovery_only`（借助搜索后端发现该站内容）和 `not_implemented`（尚无运行实现）。
 
 `web_search` 默认自动选择后端：配置 `CNWS_SEARXNG_ENDPOINT` 时使用 SearXNG，否则使用 DuckDuckGo HTML。
 
@@ -215,6 +240,8 @@ $env:CNWS_MCP_BEARER_TOKEN = "<长随机值>"
 ```text
 cn-web-search-mcp/
 ├── src/cn_web_search_mcp/  # MCP 服务、任务编排、搜索与抓取实现
+│   ├── core/sources/adapters/ # 来源 Adapter 协议、注册表、工厂与目录适配器
+│   └── data/               # YAML 来源目录、路由策略和迁移期 Markdown
 ├── tests/                  # 单元测试与协议测试
 ├── references/             # 部署说明和架构边界
 ├── schemas/                # 数据结构定义
@@ -231,6 +258,7 @@ cn-web-search-mcp/
 - 服务返回适合引用的结构化证据包；最终自然语言答案由调用它的 Agent 或模型生成。
 - 进程重启后，遗留的 `queued` / `running` 任务会标记为中断，不会自动续跑。
 - 自动质量判断能减少明显缺口，但不能替代对高风险结论的人工核验。
+- YAML 中登记的来源不等于已实现；以 `cnws://sources/coverage` 为准。
 
 更详细的设计不变量和数据边界见 [`references/architecture.md`](references/architecture.md)。
 
