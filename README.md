@@ -2,7 +2,7 @@
 
 面向中文互联网研究的自主搜索 MCP 服务。它把原先依赖模型逐步执行的搜索流程收进服务端：完整扫描权威来源规则、并发执行四个逻辑搜索来源、抓取正文、筛选最小证据片段、评估搜索质量，并按信息缺口自动补搜。
 
-当前开发版本：`0.2.0`。项目仍处于早期阶段，建议先在本机或可信网络中部署和评测。
+当前开发版本：`0.3.0`。项目仍处于早期阶段，建议先在本机或可信网络中部署和评测。
 
 ## 主要能力
 
@@ -12,6 +12,7 @@
 - **缺口驱动补搜**：根据未覆盖事实、冲突和时效不足调整后续查询，而不是机械重复关键词。
 - **可选抓取增强**：普通 HTTP 遇到超时、限流、反爬页或空正文时，可自动切换到 Firecrawl。
 - **异步任务接口**：研究任务在后台运行，支持状态查询、结果获取和取消。
+- **MCP + REST 双协议**：支持 MCP 的 Agent 使用原有工具，其他 Agent、脚本和业务服务可调用标准 HTTP API。
 - **较小模型上下文**：完整规则库和网页正文保留在服务端，只向宿主模型返回必要事实、证据片段和 URL。
 - **本地持久化**：任务、缓存、证据和域名健康信息写入 SQLite 与本地产物目录。
 - **结构化来源目录**：一次性加载并校验 YAML，区分已登记来源、可执行端点和仅用于发现的入口。
@@ -89,6 +90,67 @@ openclaw mcp doctor cn-web-search --probe
 随后将本仓库作为 Skill 安装到 OpenClaw。根目录的 `SKILL.md` 只负责触发 MCP、静默等待任务和约束最终回答；搜索规则与正文不会反复加入模型上下文。
 
 更完整的安装、JSON 注册和 HTTP 接入示例见 [`references/mcp-setup.md`](references/mcp-setup.md)。
+
+## REST API
+
+不支持 MCP 的 Agent 或程序可以启动标准 HTTP API：
+
+```powershell
+$env:CNWS_DATA_DIR = "<项目目录>\.cnws-api-data"
+$env:CNWS_API_BEARER_TOKEN = "<长随机值>"
+$env:CNWS_API_HOST = "127.0.0.1"
+$env:CNWS_API_PORT = "8766"
+.\.venv\Scripts\cn-web-search-api.exe
+```
+
+也可以使用模块入口：
+
+```powershell
+.\.venv\Scripts\python.exe -m cn_web_search_mcp.api_main
+```
+
+启动后可访问：
+
+- REST 根地址：`http://127.0.0.1:8766`
+- Swagger UI：`http://127.0.0.1:8766/docs`
+- OpenAPI 描述：`http://127.0.0.1:8766/openapi.json`
+
+主要接口：
+
+| 方法 | 路径 | 用途 |
+|---|---|---|
+| `POST` | `/v1/research` | 创建异步研究任务 |
+| `GET` | `/v1/research/{job_id}` | 查询状态 |
+| `GET` | `/v1/research/{job_id}/result` | 获取最终结果；未完成时返回 HTTP 202 |
+| `DELETE` | `/v1/research/{job_id}` | 请求取消 |
+| `POST` | `/v1/research/sync` | 在配置的等待期限内同步等待，超时后返回任务 ID |
+| `GET` | `/healthz` | 存活检查 |
+
+创建任务：
+
+```powershell
+$headers = @{
+  Authorization = "Bearer $env:CNWS_API_BEARER_TOKEN"
+  "Content-Type" = "application/json"
+}
+$body = @{
+  question = "帮我查询最新的世界杯赛程"
+  requirements = @("给出剩余赛程", "统一转换为北京时间", "优先权威来源")
+  profile = "balanced"
+  max_rounds = 3
+  timezone = "Asia/Shanghai"
+} | ConvertTo-Json
+
+$job = Invoke-RestMethod `
+  -Method Post `
+  -Uri "http://127.0.0.1:8766/v1/research" `
+  -Headers $headers `
+  -Body $body
+```
+
+其他 Agent 应静默轮询状态，进入 `completed`、`unresolvable`、`failed` 或 `cancelled` 后读取结果。最终回答使用 `result.answer_context.facts`、冲突和未解决项，不应把状态轮询内容输出给用户。
+
+REST 与 MCP 共用相同的搜索核心和 `JobService` 代码，不会维护两套搜索实现。若同时启动两个独立进程，当前版本必须为它们配置不同的 `CNWS_DATA_DIR`，避免 SQLite 启动恢复逻辑干扰另一个进程的运行中任务。完整说明见 [`references/rest-api.md`](references/rest-api.md)。
 
 ## MCP 工具
 
@@ -240,6 +302,7 @@ $env:CNWS_MCP_BEARER_TOKEN = "<长随机值>"
 ```text
 cn-web-search-mcp/
 ├── src/cn_web_search_mcp/  # MCP 服务、任务编排、搜索与抓取实现
+│   ├── api/                 # FastAPI REST 网关与请求模型
 │   ├── core/sources/adapters/ # 来源 Adapter 协议、注册表、工厂与目录适配器
 │   └── data/               # YAML 来源目录、路由策略和迁移期 Markdown
 ├── tests/                  # 单元测试与协议测试

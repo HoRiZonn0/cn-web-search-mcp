@@ -6,6 +6,7 @@
 - [接入 OpenClaw](#接入-openclaw)
 - [搜索后端](#搜索后端)
 - [Streamable HTTP](#streamable-http)
+- [标准 REST API](rest-api.md)
 - [环境变量](#环境变量)
 - [安全边界](#安全边界)
 - [验证](#验证)
@@ -128,6 +129,10 @@ $env:CNWS_MCP_BEARER_TOKEN = "使用密码管理器生成的长随机值"
 | `CNWS_MCP_TRANSPORT` | `stdio` | `stdio` 或 `streamable-http` |
 | `CNWS_MCP_HOST` | `127.0.0.1` | HTTP监听地址 |
 | `CNWS_MCP_PORT` | `8765` | HTTP监听端口 |
+| `CNWS_API_HOST` | `127.0.0.1` | 标准 REST API 监听地址 |
+| `CNWS_API_PORT` | `8766` | 标准 REST API 监听端口 |
+| `CNWS_API_BEARER_TOKEN` | 空 | REST Bearer Token；非回环监听时强制要求 |
+| `CNWS_API_SYNC_TIMEOUT_SECONDS` | `120` | REST 同步接口最大等待秒数 |
 | `CNWS_PROXY_URL` | 空 | 搜索和网页抓取代理 |
 | `CNWS_SEARXNG_ENDPOINT` | 空 | SearXNG根地址 |
 | `CNWS_SEARXNG_ENGINES` | 空 | SearXNG上游引擎列表 |
