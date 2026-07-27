@@ -146,6 +146,12 @@ $env:CNWS_MCP_BEARER_TOKEN = "使用密码管理器生成的长随机值"
 | `CNWS_MAX_RESULTS_PER_SOURCE` | `8` | 每来源最多候选结果 |
 | `CNWS_MAX_FETCHES_PER_ROUND` | `12` | 每轮最多抓取正文数 |
 | `CNWS_MAX_JOB_WORKERS` | `2` | 同时运行的研究任务数 |
+| `CNWS_COMMERCIAL_MODE` | `false` | 启用单客户商业实例 |
+| `CNWS_CUSTOMER_ID` | `local` | 当前实例的客户标识 |
+| `CNWS_CUSTOMER_PLAN` | `developer` | 客户套餐名称 |
+| `CNWS_MONTHLY_CREDIT_QUOTA` | `0` | 商业模式月度积分额度 |
+| `CNWS_RATE_LIMIT_PER_MINUTE` | `0` | 商业模式每分钟任务创建限制 |
+| `CNWS_MAX_ACTIVE_JOBS` | `0` | 商业模式最大活跃任务数 |
 | `CNWS_CACHE_TTL_SECONDS` | `3600` | 正文缓存有效期 |
 | `CNWS_ALLOW_PRIVATE_NETWORKS` | `false` | 是否允许普通网页抓取访问内网；不建议开启 |
 | `CNWS_MCP_BEARER_TOKEN` | 空 | HTTP Bearer Token；非回环监听时强制要求 |

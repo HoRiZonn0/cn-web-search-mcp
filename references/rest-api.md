@@ -76,6 +76,14 @@ DELETE /v1/research/rs_abc123
 
 未知任务统一返回 HTTP 404，参数错误返回 HTTP 422，Token 缺失或错误返回 HTTP 401。
 
+商业实例可以查询本月使用量：
+
+```text
+GET /v1/account/usage
+```
+
+响应包含套餐、月度额度、已用/剩余积分、不同 profile 的任务数、当前活跃任务和限流参数。
+
 ## 同步便捷接口
 
 ```text
@@ -112,8 +120,16 @@ http://127.0.0.1:8766/openapi.json
 | `CNWS_API_BEARER_TOKEN` | 空 | API Token；非回环监听时强制要求 |
 | `CNWS_API_SYNC_TIMEOUT_SECONDS` | `120` | 同步接口最大等待秒数 |
 | `CNWS_DATA_DIR` | `~/.cn-web-search-mcp` | 任务、缓存和证据目录 |
+| `CNWS_COMMERCIAL_MODE` | `false` | 启用单客户商业实例 |
+| `CNWS_CUSTOMER_ID` | `local` | 实例客户标识 |
+| `CNWS_CUSTOMER_PLAN` | `developer` | 套餐名称 |
+| `CNWS_MONTHLY_CREDIT_QUOTA` | `0` | 月度积分 |
+| `CNWS_RATE_LIMIT_PER_MINUTE` | `0` | 每分钟任务创建限制 |
+| `CNWS_MAX_ACTIVE_JOBS` | `0` | 最大活跃任务数 |
 
 搜索代理、SearXNG、Firecrawl、超时和抓取限制等配置与 MCP 完全相同。
+
+商业模式下 API Key、月度额度、每分钟限流和最大活跃任务数都必须显式配置为有效值。参见 [`commercial-mvp.md`](commercial-mvp.md)。
 
 ## MCP 与 REST 同时运行
 

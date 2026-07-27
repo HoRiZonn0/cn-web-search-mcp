@@ -2,7 +2,7 @@
 
 面向中文互联网研究的自主搜索 MCP 服务。它把原先依赖模型逐步执行的搜索流程收进服务端：完整扫描权威来源规则、并发执行四个逻辑搜索来源、抓取正文、筛选最小证据片段、评估搜索质量，并按信息缺口自动补搜。
 
-当前开发版本：`0.3.0`。项目仍处于早期阶段，建议先在本机或可信网络中部署和评测。
+当前开发版本：`0.4.0`。项目仍处于早期阶段，建议先在本机或可信网络中部署和评测。
 
 ## 主要能力
 
@@ -13,6 +13,7 @@
 - **可选抓取增强**：普通 HTTP 遇到超时、限流、反爬页或空正文时，可自动切换到 Firecrawl。
 - **异步任务接口**：研究任务在后台运行，支持状态查询、结果获取和取消。
 - **MCP + REST 双协议**：支持 MCP 的 Agent 使用原有工具，其他 Agent、脚本和业务服务可调用标准 HTTP API。
+- **单客户商业实例**：一键生成独立 API Key、数据卷和套餐限制，并持久化月度积分使用量。
 - **较小模型上下文**：完整规则库和网页正文保留在服务端，只向宿主模型返回必要事实、证据片段和 URL。
 - **本地持久化**：任务、缓存、证据和域名健康信息写入 SQLite 与本地产物目录。
 - **结构化来源目录**：一次性加载并校验 YAML，区分已登记来源、可执行端点和仅用于发现的入口。
@@ -124,6 +125,7 @@ $env:CNWS_API_PORT = "8766"
 | `GET` | `/v1/research/{job_id}/result` | 获取最终结果；未完成时返回 HTTP 202 |
 | `DELETE` | `/v1/research/{job_id}` | 请求取消 |
 | `POST` | `/v1/research/sync` | 在配置的等待期限内同步等待，超时后返回任务 ID |
+| `GET` | `/v1/account/usage` | 查询当前套餐、积分、任务数和并发占用 |
 | `GET` | `/healthz` | 存活检查 |
 
 创建任务：
@@ -151,6 +153,55 @@ $job = Invoke-RestMethod `
 其他 Agent 应静默轮询状态，进入 `completed`、`unresolvable`、`failed` 或 `cancelled` 后读取结果。最终回答使用 `result.answer_context.facts`、冲突和未解决项，不应把状态轮询内容输出给用户。
 
 REST 与 MCP 共用相同的搜索核心和 `JobService` 代码，不会维护两套搜索实现。若同时启动两个独立进程，当前版本必须为它们配置不同的 `CNWS_DATA_DIR`，避免 SQLite 启动恢复逻辑干扰另一个进程的运行中任务。完整说明见 [`references/rest-api.md`](references/rest-api.md)。
+
+## 每客户独立实例商业 MVP
+
+先构建一次本地镜像：
+
+```powershell
+docker build -t cn-web-search-mcp:0.4.0 .
+```
+
+为客户生成独立部署目录和随机 API Key：
+
+```powershell
+.\.venv\Scripts\cn-web-search-provision.exe `
+  --customer-id customer-a `
+  --output-dir deployments/customer-a `
+  --plan starter `
+  --monthly-credit-quota 1000 `
+  --rate-limit-per-minute 5 `
+  --max-active-jobs 2 `
+  --public-port 9001 `
+  --api-base-url https://customer-a.example.com
+```
+
+生成结果包含：
+
+```text
+deployments/customer-a/
+├── customer.env     # 客户密钥和实例配置，禁止提交 Git
+├── customer.json    # 不含完整密钥的交付清单
+├── compose.yaml     # 客户独立容器
+├── OPERATIONS.txt   # 启停和日志命令
+└── data/            # 独立 SQLite、缓存和证据
+```
+
+启动客户实例：
+
+```powershell
+cd deployments/customer-a
+docker compose --env-file customer.env up -d
+```
+
+计费积分在任务被接受时扣除：
+
+- `fast`：1 积分；
+- `balanced`：2 积分；
+- `thorough`：4 积分；
+- 状态轮询、结果读取和取消不扣积分。
+
+超过月度额度、每分钟创建限制或最大活跃任务数时返回 HTTP 429，并提供机器可读错误代码。完整运营、交付、备份和密钥轮换说明见 [`references/commercial-mvp.md`](references/commercial-mvp.md)。
 
 ## MCP 工具
 
@@ -269,6 +320,12 @@ $env:CNWS_MCP_BEARER_TOKEN = "<长随机值>"
 | `CNWS_MAX_RESULTS_PER_SOURCE` | `8` | 每个来源最多保留的候选数 |
 | `CNWS_MAX_FETCHES_PER_ROUND` | `12` | 每轮最多抓取的正文数 |
 | `CNWS_MAX_JOB_WORKERS` | `2` | 同时运行的研究任务数 |
+| `CNWS_COMMERCIAL_MODE` | `false` | 启用单客户商业实例策略 |
+| `CNWS_CUSTOMER_ID` | `local` | 当前独立实例所属客户 |
+| `CNWS_CUSTOMER_PLAN` | `developer` | 客户套餐名称 |
+| `CNWS_MONTHLY_CREDIT_QUOTA` | `0` | 商业模式月度积分额度 |
+| `CNWS_RATE_LIMIT_PER_MINUTE` | `0` | 商业模式每分钟创建任务数 |
+| `CNWS_MAX_ACTIVE_JOBS` | `0` | 商业模式最大 queued/running 任务数 |
 | `CNWS_CACHE_TTL_SECONDS` | `3600` | 正文缓存有效期（秒） |
 | `CNWS_ALLOW_PRIVATE_NETWORKS` | `false` | 是否允许普通正文抓取访问内网，不建议开启 |
 | `CNWS_MCP_BEARER_TOKEN` | 空 | 非回环 HTTP 监听时强制要求 |
