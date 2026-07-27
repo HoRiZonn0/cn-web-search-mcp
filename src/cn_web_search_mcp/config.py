@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import re
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -27,6 +28,12 @@ class Settings:
     api_port: int = 8766
     api_bearer_token: str | None = None
     api_sync_timeout_seconds: float = 120.0
+    commercial_mode: bool = False
+    customer_id: str = "local"
+    customer_plan: str = "developer"
+    monthly_credit_quota: int = 0
+    rate_limit_per_minute: int = 0
+    max_active_jobs: int = 0
     user_agent: str = DEFAULT_USER_AGENT
     proxy_url: str | None = None
     searxng_endpoint: str | None = None
@@ -59,6 +66,16 @@ class Settings:
             api_sync_timeout_seconds=float(
                 os.getenv("CNWS_API_SYNC_TIMEOUT_SECONDS", "120")
             ),
+            commercial_mode=_bool("CNWS_COMMERCIAL_MODE", False),
+            customer_id=os.getenv("CNWS_CUSTOMER_ID", "local").strip().casefold(),
+            customer_plan=os.getenv("CNWS_CUSTOMER_PLAN", "developer").strip(),
+            monthly_credit_quota=int(
+                os.getenv("CNWS_MONTHLY_CREDIT_QUOTA", "0")
+            ),
+            rate_limit_per_minute=int(
+                os.getenv("CNWS_RATE_LIMIT_PER_MINUTE", "0")
+            ),
+            max_active_jobs=int(os.getenv("CNWS_MAX_ACTIVE_JOBS", "0")),
             user_agent=os.getenv("CNWS_USER_AGENT", DEFAULT_USER_AGENT),
             proxy_url=os.getenv("CNWS_PROXY_URL") or None,
             searxng_endpoint=os.getenv("CNWS_SEARXNG_ENDPOINT") or None,
@@ -85,6 +102,30 @@ class Settings:
             raise ValueError("CNWS_API_PORT must be between 1 and 65535")
         if settings.api_sync_timeout_seconds <= 0:
             raise ValueError("CNWS_API_SYNC_TIMEOUT_SECONDS must be positive")
+        if not re.fullmatch(r"[a-z0-9][a-z0-9_-]{1,63}", settings.customer_id):
+            raise ValueError(
+                "CNWS_CUSTOMER_ID must be 2-64 lowercase letters, numbers, _ or -"
+            )
+        if settings.commercial_mode:
+            if not settings.api_bearer_token:
+                raise ValueError(
+                    "CNWS_COMMERCIAL_MODE requires CNWS_API_BEARER_TOKEN"
+                )
+            if settings.monthly_credit_quota < 1:
+                raise ValueError(
+                    "CNWS_COMMERCIAL_MODE requires a positive "
+                    "CNWS_MONTHLY_CREDIT_QUOTA"
+                )
+            if settings.rate_limit_per_minute < 1:
+                raise ValueError(
+                    "CNWS_COMMERCIAL_MODE requires a positive "
+                    "CNWS_RATE_LIMIT_PER_MINUTE"
+                )
+            if settings.max_active_jobs < 1:
+                raise ValueError(
+                    "CNWS_COMMERCIAL_MODE requires a positive "
+                    "CNWS_MAX_ACTIVE_JOBS"
+                )
         if (
             settings.api_host not in {"127.0.0.1", "localhost", "::1"}
             and not settings.api_bearer_token

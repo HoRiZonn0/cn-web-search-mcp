@@ -13,6 +13,7 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from .. import __version__
 from ..config import Settings
+from ..commercial import CommercialLimitError, CommercialPolicy
 from ..jobs import JobService
 from .models import ResearchRequest
 
@@ -41,6 +42,9 @@ def create_api_app(
         )
     owns_service = service is None
     service = service or JobService(settings)
+    commercial = (
+        CommercialPolicy(settings, service) if settings.commercial_mode else None
+    )
 
     @asynccontextmanager
     async def lifespan(_: FastAPI):
@@ -59,6 +63,7 @@ def create_api_app(
     )
     app.state.settings = settings
     app.state.job_service = service
+    app.state.commercial_policy = commercial
 
     def authorize(
         credentials: Annotated[
@@ -82,6 +87,22 @@ def create_api_app(
 
     auth = Depends(authorize)
 
+    def start_job(request: ResearchRequest) -> dict:
+        payload = request.model_dump(mode="json")
+        if commercial is None:
+            return service.start(payload)
+        try:
+            return commercial.start(payload)
+        except CommercialLimitError as exc:
+            headers = {}
+            if exc.retry_after_seconds is not None:
+                headers["Retry-After"] = str(exc.retry_after_seconds)
+            raise HTTPException(
+                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                detail={"code": exc.code, "message": exc.detail},
+                headers=headers,
+            ) from exc
+
     @app.get("/healthz", tags=["system"])
     def health() -> dict[str, str]:
         return {"status": "ok"}
@@ -93,7 +114,24 @@ def create_api_app(
         tags=["research"],
     )
     def start_research(request: ResearchRequest) -> dict:
-        return service.start(request.model_dump(mode="json"))
+        return start_job(request)
+
+    @app.get(
+        "/v1/account/usage",
+        dependencies=[auth],
+        tags=["account"],
+    )
+    def account_usage() -> dict:
+        if commercial is None:
+            return {
+                "commercial_mode": False,
+                "customer_id": settings.customer_id,
+                "plan": settings.customer_plan,
+                "monthly_credit_quota": None,
+                "credits_used": 0,
+                "credits_remaining": None,
+            }
+        return commercial.usage()
 
     @app.get(
         "/v1/research/{job_id}",
@@ -141,7 +179,7 @@ def create_api_app(
         tags=["research"],
     )
     async def research_sync(request: ResearchRequest):
-        started = service.start(request.model_dump(mode="json"))
+        started = start_job(request)
         job_id = started["job_id"]
         loop = asyncio.get_running_loop()
         deadline = loop.time() + settings.api_sync_timeout_seconds

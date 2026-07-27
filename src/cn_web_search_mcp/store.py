@@ -72,6 +72,17 @@ class JobStore:
                     last_status TEXT NOT NULL,
                     updated_at TEXT NOT NULL
                 );
+                CREATE TABLE IF NOT EXISTS commercial_usage (
+                    event_id TEXT PRIMARY KEY,
+                    job_id TEXT UNIQUE,
+                    customer_id TEXT NOT NULL,
+                    plan TEXT NOT NULL,
+                    profile TEXT NOT NULL,
+                    credits INTEGER NOT NULL CHECK(credits > 0),
+                    created_at TEXT NOT NULL
+                );
+                CREATE INDEX IF NOT EXISTS idx_commercial_usage_customer_created
+                    ON commercial_usage(customer_id, created_at);
                 """
             )
             connection.execute(
@@ -128,6 +139,104 @@ class JobStore:
         with self._connection() as connection:
             row = connection.execute("SELECT cancel_requested FROM jobs WHERE job_id=?", (job_id,)).fetchone()
         return bool(row and row[0])
+
+    def count_active_jobs(self) -> int:
+        """Count work that currently occupies this dedicated instance."""
+
+        with self._connection() as connection:
+            row = connection.execute(
+                "SELECT COUNT(*) FROM jobs WHERE status IN ('queued','running')"
+            ).fetchone()
+        return int(row[0])
+
+    def reserve_commercial_usage(
+        self,
+        *,
+        event_id: str,
+        customer_id: str,
+        plan: str,
+        profile: str,
+        credits: int,
+        quota: int,
+        period_start: str,
+    ) -> int:
+        """Atomically reserve credits and return the new period total."""
+
+        with self._connection() as connection:
+            connection.execute("BEGIN IMMEDIATE")
+            row = connection.execute(
+                """
+                SELECT COALESCE(SUM(credits), 0)
+                FROM commercial_usage
+                WHERE customer_id=? AND created_at>=?
+                """,
+                (customer_id, period_start),
+            ).fetchone()
+            used = int(row[0])
+            if used + credits > quota:
+                raise ValueError("monthly credit quota exceeded")
+            connection.execute(
+                """
+                INSERT INTO commercial_usage(
+                    event_id,customer_id,plan,profile,credits,created_at
+                ) VALUES(?,?,?,?,?,?)
+                """,
+                (event_id, customer_id, plan, profile, credits, _now()),
+            )
+        return used + credits
+
+    def bind_commercial_usage(self, event_id: str, job_id: str) -> None:
+        with self._connection() as connection:
+            cursor = connection.execute(
+                "UPDATE commercial_usage SET job_id=? WHERE event_id=?",
+                (job_id, event_id),
+            )
+            if cursor.rowcount != 1:
+                raise KeyError(f"unknown usage event: {event_id}")
+
+    def release_commercial_usage(self, event_id: str) -> None:
+        with self._connection() as connection:
+            connection.execute(
+                "DELETE FROM commercial_usage WHERE event_id=? AND job_id IS NULL",
+                (event_id,),
+            )
+
+    def commercial_usage_summary(
+        self,
+        *,
+        customer_id: str,
+        period_start: str,
+    ) -> dict[str, Any]:
+        with self._connection() as connection:
+            total = connection.execute(
+                """
+                SELECT COUNT(*), COALESCE(SUM(credits), 0)
+                FROM commercial_usage
+                WHERE customer_id=? AND created_at>=?
+                """,
+                (customer_id, period_start),
+            ).fetchone()
+            profiles = connection.execute(
+                """
+                SELECT profile, COUNT(*) AS jobs, SUM(credits) AS credits
+                FROM commercial_usage
+                WHERE customer_id=? AND created_at>=?
+                GROUP BY profile
+                ORDER BY profile
+                """,
+                (customer_id, period_start),
+            ).fetchall()
+        return {
+            "jobs": int(total[0]),
+            "credits": int(total[1]),
+            "profiles": {
+                row["profile"]: {
+                    "jobs": int(row["jobs"]),
+                    "credits": int(row["credits"]),
+                }
+                for row in profiles
+            },
+        }
 
     def save_artifact(self, job_id: str, name: str, payload: dict[str, Any]) -> Path:
         directory = self.artifacts_dir / job_id
