@@ -1,0 +1,26 @@
+services:
+  cn-web-search:
+    image: ${CNWS_IMAGE:?CNWS_IMAGE is required}
+    restart: unless-stopped
+    ports:
+      - "${CNWS_BIND_ADDRESS:-127.0.0.1}:${CNWS_PUBLIC_PORT:-8766}:8766"
+    environment:
+      CNWS_DATA_DIR: /data
+      CNWS_API_HOST: 0.0.0.0
+      CNWS_API_PORT: 8766
+      CNWS_API_BEARER_TOKEN: ${CNWS_API_BEARER_TOKEN:?API key is required}
+      CNWS_COMMERCIAL_MODE: "true"
+      CNWS_CUSTOMER_ID: ${CNWS_CUSTOMER_ID:?customer id is required}
+      CNWS_CUSTOMER_PLAN: ${CNWS_CUSTOMER_PLAN:?plan is required}
+      CNWS_MONTHLY_CREDIT_QUOTA: ${CNWS_MONTHLY_CREDIT_QUOTA:?quota is required}
+      CNWS_RATE_LIMIT_PER_MINUTE: ${CNWS_RATE_LIMIT_PER_MINUTE:?rate limit is required}
+      CNWS_MAX_ACTIVE_JOBS: ${CNWS_MAX_ACTIVE_JOBS:?active job limit is required}
+      CNWS_MAX_JOB_WORKERS: ${CNWS_MAX_JOB_WORKERS:-2}
+      CNWS_API_SYNC_TIMEOUT_SECONDS: ${CNWS_API_SYNC_TIMEOUT_SECONDS:-120}
+      CNWS_PROXY_URL: ${CNWS_PROXY_URL:-}
+      CNWS_SEARXNG_ENDPOINT: ${CNWS_SEARXNG_ENDPOINT:-}
+      CNWS_SEARXNG_ENGINES: ${CNWS_SEARXNG_ENGINES:-}
+      CNWS_FIRECRAWL_ENDPOINT: ${CNWS_FIRECRAWL_ENDPOINT:-}
+      CNWS_FIRECRAWL_API_KEY: ${CNWS_FIRECRAWL_API_KEY:-}
+    volumes:
+      - "${CNWS_HOST_DATA_DIR:?host data directory is required}:/data"

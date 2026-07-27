@@ -1,0 +1,9 @@
+.git
+.venv
+.pytest_cache
+.cnws-data
+deployments
+__pycache__
+*.py[cod]
+*.sqlite3
+*.log

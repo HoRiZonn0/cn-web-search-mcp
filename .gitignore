@@ -7,3 +7,5 @@ dist/
 build/
 *.egg-info/
 .cnws-data/
+deployments/
+customer.env
